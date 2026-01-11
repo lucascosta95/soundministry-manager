@@ -1,21 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
-import { Plus, Pencil, Trash2, CalendarDays } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { ServiceDayDialog } from "@/components/service-days/service-day-dialog"
-import { DeleteServiceDayDialog } from "@/components/service-days/delete-service-day-dialog"
-import { ServiceDay } from "@prisma/client"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {Pencil, Plus, Trash2} from "lucide-react"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardHeader} from "@/components/ui/card"
+import {Skeleton} from "@/components/ui/skeleton"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import {ServiceDayDialog} from "@/components/service-days/service-day-dialog"
+import {DeleteServiceDayDialog} from "@/components/service-days/delete-service-day-dialog"
+import {ServiceDay} from "@prisma/client"
 
 export default function ServiceDaysPage() {
   const [serviceDays, setServiceDays] = useState<ServiceDay[]>([])
@@ -67,19 +61,15 @@ export default function ServiceDaysPage() {
       </div>
 
       <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <CalendarDays className="h-5 w-5 text-muted-foreground" />
-            <CardTitle>{t("title")}</CardTitle>
-          </div>
-          <CardDescription>
-            {t("subtitle")}
-          </CardDescription>
-        </CardHeader>
+        <CardHeader></CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-muted-foreground">
-              {tc("loading")}
+            <div className="space-y-4">
+              {Array(10).fill(null).map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ))}
             </div>
           ) : serviceDays.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">

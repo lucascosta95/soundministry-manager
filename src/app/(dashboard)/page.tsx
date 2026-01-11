@@ -9,6 +9,7 @@ import {format} from "date-fns"
 import {ptBR} from "date-fns/locale"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
+import {Skeleton} from "@/components/ui/skeleton"
 
 interface ScheduleEvent {
   id: string
@@ -44,15 +45,17 @@ export default function DashboardPage() {
   })
   const [user, setUser] = useState<UserProfile | null>(null)
   const [currentSchedule, setCurrentSchedule] = useState<Schedule | null>(null)
-  const [loadingSchedule, setLoadingSchedule] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [operatorsRes, pairsRes, restrictionsRes] = await Promise.all([
+        const [operatorsRes, pairsRes, restrictionsRes, profileRes, schedulesRes] = await Promise.all([
           fetch("/api/operators"),
           fetch("/api/pairs"),
           fetch("/api/restrictions"),
+          fetch("/api/profile"),
+          fetch("/api/schedules")
         ])
         
         const [operators, pairs, restrictions] = await Promise.all([
@@ -67,13 +70,11 @@ export default function DashboardPage() {
           restrictions: restrictions.length || 0,
         })
 
-        const profileRes = await fetch("/api/profile")
         if (profileRes.ok) {
           const userData = await profileRes.json()
           setUser(userData)
         }
 
-        const schedulesRes = await fetch("/api/schedules")
         if (schedulesRes.ok) {
           const schedules: Schedule[] = await schedulesRes.json()
           const now = new Date()
@@ -95,7 +96,7 @@ export default function DashboardPage() {
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error)
       } finally {
-        setLoadingSchedule(false)
+        setIsLoading(false)
       }
     }
 
@@ -147,6 +148,70 @@ export default function DashboardPage() {
     },
   ]
 
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <Skeleton className="h-9 w-64 mb-2" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array(3).fill(null).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-9 w-9 rounded-lg" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-9 w-12 mb-1" />
+                <Skeleton className="h-3 w-32" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-9 w-32" />
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {Array(12).fill(null).map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-4 w-4 rounded-full" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <Skeleton className="h-5 w-20 rounded-full" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-1.5 w-1.5 rounded-full" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-1.5 w-1.5 rounded-full" />
+                      <Skeleton className="h-3 w-28" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-1.5 w-1.5 rounded-full" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -194,16 +259,7 @@ export default function DashboardPage() {
             )}
         </div>
 
-        {loadingSchedule ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3].map((i) => (
-                    <Card key={i} className="animate-pulse">
-                        <CardHeader className="h-20 bg-muted/50" />
-                        <CardContent className="h-24 bg-muted/20" />
-                    </Card>
-                ))}
-            </div>
-        ) : currentSchedule ? (
+        {currentSchedule ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {currentSchedule.events.map((event) => (
                     <Card key={event.id}>

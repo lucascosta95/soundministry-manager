@@ -122,8 +122,6 @@ export async function generateSchedule({ month, year, locale }: SchedulerOptions
     })
 
     for (const event of events) {
-      const eventLogPrefix = `[${event.date.toISOString().split('T')[0]} - ${event.serviceDay.name}]`
-      
       const scheduleEvent = await prisma.scheduleEvent.create({
         data: {
           scheduleId: schedule.id,

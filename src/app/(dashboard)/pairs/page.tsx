@@ -1,21 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Plus, Trash2 } from "lucide-react"
-import { PairDialog } from "@/components/pairs/pair-dialog"
-import { DeletePairDialog } from "@/components/pairs/delete-pair-dialog"
-import { useToast } from "@/components/ui/use-toast"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardHeader} from "@/components/ui/card"
+import {Skeleton} from "@/components/ui/skeleton"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import {Plus, Trash2} from "lucide-react"
+import {PairDialog} from "@/components/pairs/pair-dialog"
+import {DeletePairDialog} from "@/components/pairs/delete-pair-dialog"
+import {useToast} from "@/components/ui/use-toast"
 
 type PreferredPair = {
   id: string
@@ -91,13 +85,15 @@ export default function PairsPage() {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-        </CardHeader>
+        <CardHeader></CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">
-              {tc("loading")}
+            <div className="space-y-4">
+              {Array(10).fill(null).map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ))}
             </div>
           ) : pairs.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">

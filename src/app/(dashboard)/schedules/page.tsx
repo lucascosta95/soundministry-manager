@@ -1,23 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
-import { Plus, Eye, Trash2, CalendarDays } from "lucide-react"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {Eye, Plus, Trash2} from "lucide-react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { GenerateScheduleDialog } from "@/components/schedules/generate-schedule-dialog"
-import { DeleteScheduleDialog } from "@/components/schedules/delete-schedule-dialog"
-import { Badge } from "@/components/ui/badge"
-import { useToast } from "@/components/ui/use-toast"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardHeader} from "@/components/ui/card"
+import {Skeleton} from "@/components/ui/skeleton"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import {GenerateScheduleDialog} from "@/components/schedules/generate-schedule-dialog"
+import {DeleteScheduleDialog} from "@/components/schedules/delete-schedule-dialog"
+import {Badge} from "@/components/ui/badge"
+import {useToast} from "@/components/ui/use-toast"
 
 interface Schedule {
   id: string
@@ -95,19 +89,15 @@ export default function SchedulesPage() {
       </div>
 
       <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <CalendarDays className="h-5 w-5 text-muted-foreground" />
-            <CardTitle>{t("title")}</CardTitle>
-          </div>
-          <CardDescription>
-            {t("subtitle")}
-          </CardDescription>
-        </CardHeader>
+        <CardHeader></CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8 text-muted-foreground">
-              {tc("loading")}
+            <div className="space-y-4">
+              {Array(10).fill(null).map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ))}
             </div>
           ) : schedules.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">

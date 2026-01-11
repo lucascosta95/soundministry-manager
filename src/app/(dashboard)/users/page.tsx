@@ -1,28 +1,17 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { UserDialog } from "@/components/users/user-dialog"
-import { DeleteUserDialog } from "@/components/users/delete-user-dialog"
-import { ResetPasswordDialog } from "@/components/users/reset-password-dialog"
-import { useToast } from "@/components/ui/use-toast"
-import { useState, useEffect } from "react"
-import { MoreHorizontal, Pencil, Trash2, Plus, Loader2, KeyRound } from "lucide-react"
+import {useTranslations} from "next-intl"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardHeader} from "@/components/ui/card"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {Skeleton} from "@/components/ui/skeleton"
+import {UserDialog} from "@/components/users/user-dialog"
+import {DeleteUserDialog} from "@/components/users/delete-user-dialog"
+import {ResetPasswordDialog} from "@/components/users/reset-password-dialog"
+import {useToast} from "@/components/ui/use-toast"
+import {useEffect, useState} from "react"
+import {KeyRound, MoreHorizontal, Pencil, Plus, Trash2} from "lucide-react"
 
 interface User {
   id: string
@@ -113,13 +102,15 @@ export default function UsersPage() {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-        </CardHeader>
+        <CardHeader></CardHeader>
         <CardContent>
           {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin" />
+            <div className="space-y-4">
+              {Array(10).fill(null).map((_, i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ))}
             </div>
           ) : users.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
