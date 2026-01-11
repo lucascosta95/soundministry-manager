@@ -1,10 +1,38 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, UsersRound, CalendarX } from "lucide-react"
-import { useEffect, useState } from "react"
+import {useTranslations} from "next-intl"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import {ArrowRight, Calendar as CalendarIcon, CalendarX, Users, UsersRound} from "lucide-react"
+import {useEffect, useState} from "react"
 import Link from "next/link"
+import {format} from "date-fns"
+import {ptBR} from "date-fns/locale"
+import {Badge} from "@/components/ui/badge"
+import {Button} from "@/components/ui/button"
+
+interface ScheduleEvent {
+  id: string
+  date: string
+  name: string
+  assignments: {
+    id: string
+    operator: {
+      name: string
+    }
+  }[]
+}
+
+interface Schedule {
+  id: string
+  month: number
+  year: number
+  status: string
+  events: ScheduleEvent[]
+}
+
+interface UserProfile {
+  name: string
+}
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard")
@@ -14,9 +42,12 @@ export default function DashboardPage() {
     pairs: 0,
     restrictions: 0,
   })
+  const [user, setUser] = useState<UserProfile | null>(null)
+  const [currentSchedule, setCurrentSchedule] = useState<Schedule | null>(null)
+  const [loadingSchedule, setLoadingSchedule] = useState(true)
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
         const [operatorsRes, pairsRes, restrictionsRes] = await Promise.all([
           fetch("/api/operators"),
@@ -35,13 +66,56 @@ export default function DashboardPage() {
           pairs: pairs.length || 0,
           restrictions: restrictions.length || 0,
         })
+
+        const profileRes = await fetch("/api/profile")
+        if (profileRes.ok) {
+          const userData = await profileRes.json()
+          setUser(userData)
+        }
+
+        const schedulesRes = await fetch("/api/schedules")
+        if (schedulesRes.ok) {
+          const schedules: Schedule[] = await schedulesRes.json()
+          const now = new Date()
+          const currentMonth = now.getMonth() + 1
+          const currentYear = now.getFullYear()
+
+          const foundSchedule = schedules.find(
+            s => s.month === currentMonth && s.year === currentYear
+          )
+
+          if (foundSchedule) {
+            const detailRes = await fetch(`/api/schedules/${foundSchedule.id}`)
+            if (detailRes.ok) {
+              const detailData = await detailRes.json()
+              setCurrentSchedule(detailData)
+            }
+          }
+        }
       } catch (error) {
-        console.error("Failed to fetch stats:", error)
+        console.error("Failed to fetch dashboard data:", error)
+      } finally {
+        setLoadingSchedule(false)
       }
     }
 
-    fetchStats()
+    fetchData()
   }, [])
+
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    const name = user?.name?.split(" ")[0] || ""
+    
+    if (hour >= 5 && hour < 12) return t("goodMorning", { name })
+    if (hour >= 12 && hour < 18) return t("goodAfternoon", { name })
+    return t("goodEvening", { name })
+  }
+
+  const getMonthName = (month: number) => {
+    const date = new Date()
+    date.setMonth(month - 1)
+    return format(date, "MMMM", { locale: ptBR })
+  }
 
   const cards = [
     {
@@ -76,9 +150,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{getGreeting()}</h1>
         <p className="text-muted-foreground mt-2">
-          {t("subtitle")}
+          {format(new Date(), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
         </p>
       </div>
 
@@ -108,30 +182,74 @@ export default function DashboardPage() {
         })}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("welcome")}</CardTitle>
-          <CardDescription>
-            {t("welcomeDescription")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            {t("intro")}
-          </p>
-          <div className="space-y-2">
-            <h3 className="font-semibold">{t("featuresTitle")}</h3>
-            <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-              <li>{t("feature1")}</li>
-              <li>{t("feature2")}</li>
-              <li>{t("feature3")}</li>
-              <li>{t("feature4")}</li>
-              <li>{t("feature5")}</li>
-              <li>{t("feature6")}</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold tracking-tight">Escala de {currentSchedule ? getMonthName(currentSchedule.month) : "Este Mês"}</h2>
+            {currentSchedule && (
+                <Link href={`/schedules/${currentSchedule.id}`}>
+                    <Button variant="outline" size="sm">
+                        Ver Completa <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </Link>
+            )}
+        </div>
+
+        {loadingSchedule ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3].map((i) => (
+                    <Card key={i} className="animate-pulse">
+                        <CardHeader className="h-20 bg-muted/50" />
+                        <CardContent className="h-24 bg-muted/20" />
+                    </Card>
+                ))}
+            </div>
+        ) : currentSchedule ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {currentSchedule.events.map((event) => (
+                    <Card key={event.id}>
+                        <CardHeader className="pb-2">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                                    <span className="font-medium">
+                                        {format(new Date(event.date), "dd/MM", { locale: ptBR })}
+                                    </span>
+                                </div>
+                                <Badge variant="secondary" className="text-xs">{event.name}</Badge>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-2">
+                                {event.assignments.length > 0 ? (
+                                    event.assignments.map((assignment) => (
+                                        <div key={assignment.id} className="flex items-center gap-2 text-sm">
+                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                            <span>{assignment.operator.name}</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <span className="text-sm text-muted-foreground italic">Sem operadores</span>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        ) : (
+            <Card className="bg-muted/50 border-dashed">
+                <CardContent className="flex flex-col items-center justify-center py-10 text-center">
+                    <CalendarIcon className="h-10 w-10 text-muted-foreground mb-4" />
+                    <h3 className="font-semibold text-lg">Nenhuma escala encontrada para este mês</h3>
+                    <p className="text-muted-foreground text-sm mt-1 mb-4">
+                        A escala deste mês ainda não foi gerada.
+                    </p>
+                    <Link href="/schedules">
+                        <Button>Ir para Escalas</Button>
+                    </Link>
+                </CardContent>
+            </Card>
+        )}
+      </div>
     </div>
   )
 }

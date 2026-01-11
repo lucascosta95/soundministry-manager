@@ -25,21 +25,12 @@
     "no": "Não"
   },
   "dashboard": {
-    "title": "Dashboard",
-    "subtitle": "Visão geral do sistema de gerenciamento",
-    "welcome": "Bem-vindo ao SoundMinistry Manager",
-    "welcomeDescription": "Sistema de gerenciamento para equipe de sonoplastia",
-    "intro": "Este sistema permite gerenciar de forma eficiente a escala de sonoplastas da sua igreja.",
-    "featuresTitle": "Funcionalidades disponíveis:",
-    "feature1": "Cadastro e gerenciamento de sonoplastas",
-    "feature2": "Criação de duplas preferenciais com validação de compatibilidade",
-    "feature3": "Registro de restrições mensais de disponibilidade",
-    "feature4": "Interface responsiva para desktop, tablet e mobile",
-    "feature5": "Suporte a múltiplos idiomas (Português e Inglês)",
-    "feature6": "Tema claro e escuro",
     "manageOperators": "Gerenciar sonoplastas",
     "managePairs": "Gerenciar duplas preferenciais",
-    "manageRestrictions": "Gerenciar restrições mensais"
+    "manageRestrictions": "Gerenciar restrições mensais",
+    "goodMorning": "Bom dia, {name}",
+    "goodAfternoon": "Boa tarde, {name}",
+    "goodEvening": "Boa noite, {name}"
   },
   "auth": {
     "login": "Entrar",

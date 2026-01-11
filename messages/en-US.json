@@ -25,21 +25,12 @@
     "no": "No"
   },
   "dashboard": {
-    "title": "Dashboard",
-    "subtitle": "System overview",
-    "welcome": "Welcome to SoundMinistry Manager",
-    "welcomeDescription": "Management system for sound team",
-    "intro": "This system allows you to efficiently manage your church's sound team schedule.",
-    "featuresTitle": "Available features:",
-    "feature1": "Sound operators registration and management",
-    "feature2": "Creation of preferred pairs with compatibility validation",
-    "feature3": "Monthly availability restrictions registration",
-    "feature4": "Responsive interface for desktop, tablet and mobile",
-    "feature5": "Multi-language support (Portuguese and English)",
-    "feature6": "Light and dark theme",
     "manageOperators": "Manage sound operators",
     "managePairs": "Manage preferred pairs",
-    "manageRestrictions": "Manage monthly restrictions"
+    "manageRestrictions": "Manage monthly restrictions",
+    "goodMorning": "Good morning, {name}",
+    "goodAfternoon": "Good afternoon, {name}",
+    "goodEvening": "Good evening, {name}"
   },
   "auth": {
     "login": "Login",
