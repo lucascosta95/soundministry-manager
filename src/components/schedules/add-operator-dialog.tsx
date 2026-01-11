@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useState} from "react"
+import {useState} from "react"
 import {useTranslations} from "next-intl"
 import {Check, ChevronsUpDown, UserPlus} from "lucide-react"
 import {Button} from "@/components/ui/button"
@@ -27,39 +27,17 @@ interface AddOperatorDialogProps {
   eventId: string
   onSuccess: () => void
   assignedOperatorIds: string[]
+  operators: SoundOperator[]
 }
 
-export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds }: AddOperatorDialogProps) {
+export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds, operators }: AddOperatorDialogProps) {
   const [open, setOpen] = useState(false)
   const [popoverOpen, setPopoverOpen] = useState(false)
-  const [operators, setOperators] = useState<SoundOperator[]>([])
   const [selectedOperatorId, setSelectedOperatorId] = useState<string>("")
-  const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const t = useTranslations("schedules")
   const tc = useTranslations("common")
   const { toast } = useToast()
-
-  useEffect(() => {
-    if (open) {
-      fetchOperators()
-    }
-  }, [open])
-
-  const fetchOperators = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch("/api/operators")
-      if (response.ok) {
-        const data = await response.json()
-        setOperators(data)
-      }
-    } catch (error) {
-      console.error("Failed to fetch operators:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleSave = async () => {
     if (!selectedOperatorId) return
@@ -79,8 +57,8 @@ export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds }: A
 
       if (response.ok) {
         toast({
-          title: "Sucesso",
-          description: "Operador adicionado com sucesso",
+          title: t("operatorAddedSuccess"),
+          description: t("operatorAddedSuccess"),
         })
         onSuccess()
         setOpen(false)
@@ -88,15 +66,15 @@ export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds }: A
       } else {
         const error = await response.json()
         toast({
-          title: "Erro",
-          description: error.error || "Falha ao adicionar operador",
+          title: t("addOperatorErrorGeneric"),
+          description: error.error || t("addOperatorError"),
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
-        title: "Erro",
-        description: "Erro ao adicionar operador",
+        title: t("addOperatorErrorGeneric"),
+        description: t("addOperatorError"),
         variant: "destructive",
       })
     } finally {
@@ -112,14 +90,14 @@ export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds }: A
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <UserPlus className="h-4 w-4 mr-2" />
-          Adicionar
+          {t("add")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Adicionar Operador</DialogTitle>
+          <DialogTitle>{t("addOperator")}</DialogTitle>
           <DialogDescription>
-            Selecione um operador para adicionar a este evento.
+            {t("selectOperatorDescription")}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
@@ -133,15 +111,15 @@ export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds }: A
               >
                 {selectedOperatorId
                   ? operators.find((op) => op.id === selectedOperatorId)?.name
-                  : "Selecione um operador..."}
+                  : t("selectOperatorPlaceholder")}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
               <Command>
-                <CommandInput placeholder="Buscar operador..." />
+                <CommandInput placeholder={t("searchOperatorPlaceholder")} />
                 <CommandList>
-                    <CommandEmpty>Nenhum operador encontrado.</CommandEmpty>
+                    <CommandEmpty>{t("noOperatorFound")}</CommandEmpty>
                     <CommandGroup>
                     {availableOperators.map((operator) => (
                         <CommandItem
@@ -172,7 +150,7 @@ export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds }: A
             {tc("cancel")}
           </Button>
           <Button onClick={handleSave} disabled={!selectedOperatorId || saving}>
-            {saving ? tc("saving") : tc("save")}
+            {saving ? tc("loading") : tc("save")}
           </Button>
         </DialogFooter>
       </DialogContent>
