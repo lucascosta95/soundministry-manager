@@ -66,7 +66,7 @@ export default function SchedulesPage() {
       "", "january", "february", "march", "april", "may", "june",
       "july", "august", "september", "october", "november", "december"
     ]
-    // Add check to ensure month is within valid range
+
     if (month < 1 || month > 12) return ""
     return tm(months[month] as any)
   }
