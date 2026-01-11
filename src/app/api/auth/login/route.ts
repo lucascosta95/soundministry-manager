@@ -28,7 +28,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const response = NextResponse.json({ success: true })
+    const response = NextResponse.json({ 
+      success: true,
+      user: {
+        preferredTheme: user.preferredTheme,
+        preferredLocale: user.preferredLocale,
+      },
+    })
+    response.cookies.set("NEXT_LOCALE", user.preferredLocale, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    })
+
     const session = await getIronSession<SessionData>(request, response, sessionOptions)
     
     session.userId = user.id

@@ -1,4 +1,3 @@
-// Schema do Banco de Dados - SoundMinistry Manager
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,34 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// MODELO: Usuário (para autenticação)
-// ============================================
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String // senha criptografada com bcrypt
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(cuid())
+  email            String   @unique
+  password         String
+  name             String
+  role             String   @default("USER")
+  preferredTheme   String   @default("system")
+  preferredLocale  String   @default("pt-BR")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@map("users")
 }
 
-// ============================================
-// MODELO: Sonoplasta (Sound Operator)
-// ============================================
 model SoundOperator {
   id                      String   @id @default(cuid())
   name                    String
   birthday                DateTime
-  monthlyAvailability     Int // quantidade máxima de vezes no mês
-  weeklyAvailability      String[] // ["WEDNESDAY", "SATURDAY", "SUNDAY"]
-  annualAvailability      String[] // ["JANUARY", "FEBRUARY", ..., "DECEMBER"]
+  monthlyAvailability     Int
+  weeklyAvailability      String[]
+  annualAvailability      String[]
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
 
-  // Relações
   pairsAsFirst            PreferredPair[] @relation("FirstOperator")
   pairsAsSecond           PreferredPair[] @relation("SecondOperator")
   monthlyRestrictions     MonthlyRestriction[]
@@ -43,9 +38,6 @@ model SoundOperator {
   @@map("sound_operators")
 }
 
-// ============================================
-// MODELO: Duplas Preferenciais
-// ============================================
 model PreferredPair {
   id              String   @id @default(cuid())
   firstOperatorId String
@@ -53,31 +45,24 @@ model PreferredPair {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  // Relações
   firstOperator   SoundOperator @relation("FirstOperator", fields: [firstOperatorId], references: [id], onDelete: Cascade)
   secondOperator  SoundOperator @relation("SecondOperator", fields: [secondOperatorId], references: [id], onDelete: Cascade)
 
-  // Constraint: não permitir duplas duplicadas
   @@unique([firstOperatorId, secondOperatorId])
   @@map("preferred_pairs")
 }
 
-// ============================================
-// MODELO: Restrições Mensais
-// ============================================
 model MonthlyRestriction {
   id              String   @id @default(cuid())
   operatorId      String
-  month           Int // 1-12
+  month           Int
   year            Int
-  restrictedDays  Int[] // dias do mês [1, 5, 15, ...]
+  restrictedDays  Int[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  // Relações
   operator        SoundOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
 
-  // Constraint: evitar duplicidade
   @@unique([operatorId, month, year])
   @@map("monthly_restrictions")
 }

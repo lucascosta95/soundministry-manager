@@ -4,9 +4,8 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 Iniciando seed do banco de dados...')
+  console.log('🌱 Starting database seed...')
 
-  // Criar usuário admin padrão
   const hashedPassword = await bcrypt.hash('admin123', 10)
   
   const user = await prisma.user.upsert({
@@ -15,13 +14,15 @@ async function main() {
     create: {
       email: 'admin@soundministry.com',
       password: hashedPassword,
-      name: 'Administrador',
+      name: 'Administrator',
+      role: 'ADMIN',
+      preferredTheme: 'system',
+      preferredLocale: 'pt-BR',
     },
   })
 
-  console.log('✅ Usuário admin criado:', user.email)
+  console.log('✅ Admin user created:', user.email)
 
-  // Criar alguns sonoplastas de exemplo
   const operator1 = await prisma.soundOperator.upsert({
     where: { id: 'example-1' },
     update: {},
@@ -54,14 +55,14 @@ async function main() {
     },
   })
 
-  console.log('✅ Sonoplastas de exemplo criados')
+  console.log('✅ Example operators created')
 
-  console.log('🎉 Seed concluído com sucesso!')
+  console.log('🎉 Seed completed successfully!')
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Erro no seed:', e)
+    console.error('❌ Seed error:', e)
     process.exit(1)
   })
   .finally(async () => {

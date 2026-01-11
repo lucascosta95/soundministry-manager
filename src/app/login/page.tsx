@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Music } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { useTheme } from "next-themes"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -20,6 +21,7 @@ export default function LoginPage() {
   const t = useTranslations("auth")
   const tc = useTranslations("common")
   const { toast } = useToast()
+  const { setTheme } = useTheme()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,6 +35,12 @@ export default function LoginPage() {
       })
 
       if (response.ok) {
+        const data = await response.json()
+        
+        if (data.user?.preferredTheme) {
+          setTheme(data.user.preferredTheme)
+        }
+        
         router.push("/")
         router.refresh()
       } else {

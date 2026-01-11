@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { Music, Users, UsersRound, CalendarX, LogOut, Menu, ChevronDown, ChevronRight, FolderOpen } from "lucide-react"
+import { Music, Users, UsersRound, CalendarX, LogOut, Menu, ChevronDown, ChevronRight, FolderOpen, UserCircle, Settings } from "lucide-react"
 import { useState } from "react"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -28,6 +28,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: t("operators"), href: "/operators", icon: Users },
     { name: t("pairs"), href: "/pairs", icon: UsersRound },
     { name: t("restrictions"), href: "/restrictions", icon: CalendarX },
+    { name: t("users"), href: "/users", icon: Settings },
   ]
 
   return (
@@ -109,6 +110,22 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               )}
             </div>
 
+            <Link
+              href="/profile"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                pathname === "/profile"
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-accent"
+              )}
+            >
+              <UserCircle className="h-5 w-5" />
+              <span>{t("profile")}</span>
+            </Link>
+
+            
+
             <Button
               variant="ghost"
               className="w-full justify-start"
@@ -185,6 +202,21 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 </div>
               )}
             </div>
+
+            <Link
+              href="/profile"
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                pathname === "/profile"
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-accent"
+              )}
+            >
+              <UserCircle className="h-5 w-5" />
+              <span>{t("profile")}</span>
+            </Link>
+
+            
           </nav>
 
           {/* Bottom Actions */}
