@@ -25,12 +25,15 @@ type SoundOperator = {
   name: string
 }
 
-type MonthlyRestriction = {
+export type MonthlyRestriction = {
   id: string
   operatorId: string
   month: number
   year: number
   restrictedDays: number[]
+  operator?: {
+    name: string
+  }
 }
 
 type RestrictionDialogProps = {

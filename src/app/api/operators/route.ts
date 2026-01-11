@@ -6,8 +6,9 @@ const operatorSchema = z.object({
   name: z.string().min(1),
   birthday: z.string(),
   monthlyAvailability: z.number().min(1),
-  weeklyAvailability: z.array(z.enum(["WEDNESDAY", "SATURDAY", "SUNDAY"])),
+  weeklyAvailability: z.array(z.string()),
   annualAvailability: z.array(z.string()),
+  canWorkAlone: z.boolean().default(false),
 })
 
 export async function GET() {

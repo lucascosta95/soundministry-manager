@@ -17,17 +17,7 @@ import { RestrictionDialog } from "@/components/restrictions/restriction-dialog"
 import { DeleteRestrictionDialog } from "@/components/restrictions/delete-restriction-dialog"
 import { useToast } from "@/components/ui/use-toast"
 
-type MonthlyRestriction = {
-  id: string
-  month: number
-  year: number
-  restrictedDays: number[]
-  operator: {
-    id: string
-    name: string
-  }
-  createdAt: string
-}
+import { MonthlyRestriction } from "@/components/restrictions/restriction-dialog"
 
 export default function RestrictionsPage() {
   const t = useTranslations("restrictions")
@@ -132,7 +122,7 @@ export default function RestrictionsPage() {
                   {restrictions.map((restriction) => (
                     <TableRow key={restriction.id}>
                       <TableCell className="font-medium">
-                        {restriction.operator.name}
+                        {restriction.operator?.name || "Desconhecido"}
                       </TableCell>
                       <TableCell>
                         {getMonthName(restriction.month)}/{restriction.year}

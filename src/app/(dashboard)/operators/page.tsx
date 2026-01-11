@@ -19,15 +19,7 @@ import { format } from "date-fns"
 import { ptBR, enUS } from "date-fns/locale"
 import { useToast } from "@/components/ui/use-toast"
 
-type SoundOperator = {
-  id: string
-  name: string
-  birthday: string
-  monthlyAvailability: number
-  weeklyAvailability: string[]
-  annualAvailability: string[]
-  createdAt: string
-}
+import { SoundOperator } from "@/components/operators/operator-dialog"
 
 export default function OperatorsPage() {
   const t = useTranslations("operators")
@@ -37,13 +29,26 @@ export default function OperatorsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedOperator, setSelectedOperator] = useState<SoundOperator | null>(null)
+  const [serviceDays, setServiceDays] = useState<{ id: string; name: string; weekDay: number }[]>([])
   const { toast } = useToast()
 
-  const fetchOperators = async () => {
+  const loadData = async () => {
+    setIsLoading(true)
     try {
-      const response = await fetch("/api/operators")
-      const data = await response.json()
-      setOperators(data)
+      const [operatorsRes, serviceDaysRes] = await Promise.all([
+        fetch("/api/operators"),
+        fetch("/api/service-days"),
+      ])
+
+      if (operatorsRes.ok) {
+        const operatorsData = await operatorsRes.json()
+        setOperators(operatorsData)
+      }
+
+      if (serviceDaysRes.ok) {
+        const serviceDaysData = await serviceDaysRes.json()
+        setServiceDays(serviceDaysData)
+      }
     } catch (error) {
       toast({
         title: "Erro",
@@ -56,7 +61,7 @@ export default function OperatorsPage() {
   }
 
   useEffect(() => {
-    fetchOperators()
+    loadData()
   }, [])
 
   const handleEdit = (operator: SoundOperator) => {
@@ -75,18 +80,27 @@ export default function OperatorsPage() {
   }
 
   const handleSuccess = () => {
-    fetchOperators()
+    loadData()
     setDialogOpen(false)
     setDeleteDialogOpen(false)
   }
 
-  const getDayLabel = (day: string) => {
-    const days: Record<string, string> = {
-      WEDNESDAY: t("wednesday"),
-      SATURDAY: t("saturday"),
-      SUNDAY: t("sunday"),
+  const getDayLabel = (dayIdOrName: string) => {
+    const serviceDay = serviceDays.find(sd => sd.id === dayIdOrName)
+    if (serviceDay) {
+      const days = [
+        t("sunday"),
+        t("monday"),
+        t("tuesday"),
+        t("wednesday"),
+        t("thursday"),
+        t("friday"),
+        t("saturday"),
+      ]
+      return days[serviceDay.weekDay] || serviceDay.name
     }
-    return days[day] || day
+
+    return dayIdOrName
   }
 
   return (
@@ -125,6 +139,7 @@ export default function OperatorsPage() {
                     <TableHead>{t("name")}</TableHead>
                     <TableHead className="hidden md:table-cell">{t("birthday")}</TableHead>
                     <TableHead className="hidden lg:table-cell">{t("monthlyAvailability")}</TableHead>
+                    <TableHead className="hidden lg:table-cell">{t("canWorkAlone")}</TableHead>
                     <TableHead className="hidden xl:table-cell">{t("weeklyAvailability")}</TableHead>
                     <TableHead className="text-right">{tc("actions")}</TableHead>
                   </TableRow>
@@ -138,6 +153,9 @@ export default function OperatorsPage() {
                       </TableCell>
                       <TableCell className="hidden lg:table-cell">
                         {operator.monthlyAvailability}x
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {operator.canWorkAlone ? tc("yes") : tc("no")}
                       </TableCell>
                       <TableCell className="hidden xl:table-cell">
                         <div className="flex flex-wrap gap-1">

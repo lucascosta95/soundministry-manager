@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/components/ui/use-toast"
 
-type MonthlyRestriction = {
+export type MonthlyRestriction = {
   id: string
   month: number
   year: number
-  operator: {
+  operator?: {
     name: string
   }
 }
@@ -91,7 +91,7 @@ export function DeleteRestrictionDialog({
           <AlertDialogDescription>
             {restriction && (
               <span className="font-semibold block mt-2">
-                {restriction.operator.name} - {getMonthName(restriction.month)}/{restriction.year}
+                {restriction.operator?.name || "Desconhecido"} - {getMonthName(restriction.month)}/{restriction.year}
               </span>
             )}
           </AlertDialogDescription>

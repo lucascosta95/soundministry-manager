@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { Music, Users, UsersRound, CalendarX, LogOut, Menu, ChevronDown, ChevronRight, FolderOpen, UserCircle, Settings } from "lucide-react"
+import { Music, Users, UsersRound, CalendarX, LogOut, Menu, ChevronDown, ChevronRight, FolderOpen, UserCircle, Settings, CalendarDays, CalendarClock } from "lucide-react"
 import { useState } from "react"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -28,6 +28,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: t("operators"), href: "/operators", icon: Users },
     { name: t("pairs"), href: "/pairs", icon: UsersRound },
     { name: t("restrictions"), href: "/restrictions", icon: CalendarX },
+    { name: t("serviceDays"), href: "/service-days", icon: CalendarDays },
     { name: t("users"), href: "/users", icon: Settings },
   ]
 
@@ -69,6 +70,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             >
               <Music className="h-5 w-5" />
               <span>{t("dashboard")}</span>
+            </Link>
+
+            <Link
+              href="/schedules"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                pathname === "/schedules"
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-accent"
+              )}
+            >
+              <CalendarDays className="h-5 w-5" />
+              <span>{t("schedules")}</span>
             </Link>
 
             <div className="space-y-1">
@@ -163,6 +178,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             >
               <Music className="h-5 w-5" />
               <span>{t("dashboard")}</span>
+            </Link>
+
+            <Link
+              href="/schedules"
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                pathname === "/schedules"
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-accent"
+              )}
+            >
+              <CalendarDays className="h-5 w-5" />
+              <span>{t("schedules")}</span>
             </Link>
 
             <div className="space-y-1">

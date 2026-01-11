@@ -14,13 +14,14 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 
-type SoundOperator = {
+export type SoundOperator = {
   id: string
   name: string
   birthday: string
   monthlyAvailability: number
   weeklyAvailability: string[]
   annualAvailability: string[]
+  canWorkAlone: boolean
 }
 
 type OperatorDialogProps = {
@@ -30,7 +31,6 @@ type OperatorDialogProps = {
   onSuccess: () => void
 }
 
-const DAYS = ["WEDNESDAY", "SATURDAY", "SUNDAY"]
 const MONTHS = [
   "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
   "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
@@ -47,6 +47,14 @@ export function OperatorDialog({
   const tc = useTranslations("common")
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
+  const [serviceDays, setServiceDays] = useState<{ id: string; name: string; weekDay: number }[]>([])
+
+  useEffect(() => {
+    fetch("/api/service-days")
+      .then((res) => res.json())
+      .then((data) => setServiceDays(data))
+      .catch((err) => console.error("Failed to fetch service days", err))
+  }, [])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -54,6 +62,7 @@ export function OperatorDialog({
     monthlyAvailability: 4,
     weeklyAvailability: [] as string[],
     annualAvailability: [] as string[],
+    canWorkAlone: false,
   })
 
   useEffect(() => {
@@ -64,6 +73,7 @@ export function OperatorDialog({
         monthlyAvailability: operator.monthlyAvailability,
         weeklyAvailability: operator.weeklyAvailability,
         annualAvailability: operator.annualAvailability,
+        canWorkAlone: operator.canWorkAlone,
       })
     } else {
       setFormData({
@@ -72,6 +82,7 @@ export function OperatorDialog({
         monthlyAvailability: 4,
         weeklyAvailability: [],
         annualAvailability: [],
+        canWorkAlone: false,
       })
     }
   }, [operator, open])
@@ -117,12 +128,12 @@ export function OperatorDialog({
     }
   }
 
-  const toggleDay = (day: string) => {
+  const toggleDay = (dayId: string) => {
     setFormData((prev) => ({
       ...prev,
-      weeklyAvailability: prev.weeklyAvailability.includes(day)
-        ? prev.weeklyAvailability.filter((d) => d !== day)
-        : [...prev.weeklyAvailability, day],
+      weeklyAvailability: prev.weeklyAvailability.includes(dayId)
+        ? prev.weeklyAvailability.filter((d) => d !== dayId)
+        : [...prev.weeklyAvailability, dayId],
     }))
   }
 
@@ -135,13 +146,17 @@ export function OperatorDialog({
     }))
   }
 
-  const getDayLabel = (day: string) => {
-    const days: Record<string, string> = {
-      WEDNESDAY: t("wednesday"),
-      SATURDAY: t("saturday"),
-      SUNDAY: t("sunday"),
-    }
-    return days[day] || day
+  const getDayLabel = (day: number) => {
+    const days = [
+      t("sunday"),
+      t("monday"),
+      t("tuesday"),
+      t("wednesday"),
+      t("thursday"),
+      t("friday"),
+      t("saturday"),
+    ]
+    return days[day] || ""
   }
 
   const getMonthLabel = (month: string) => {
@@ -203,21 +218,42 @@ export function OperatorDialog({
             </p>
           </div>
 
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="canWorkAlone"
+              checked={formData.canWorkAlone}
+              onCheckedChange={(checked) =>
+                setFormData({ ...formData, canWorkAlone: checked === true })
+              }
+            />
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor="canWorkAlone"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {t("canWorkAlone")}
+              </label>
+              <p className="text-sm text-muted-foreground">
+                {t("canWorkAloneDesc")}
+              </p>
+            </div>
+          </div>
+
           <div className="space-y-3">
             <Label>{t("weeklyAvailability")}</Label>
             <div className="space-y-2">
-              {DAYS.map((day) => (
-                <div key={day} className="flex items-center space-x-2">
+              {serviceDays.map((day) => (
+                <div key={day.id} className="flex items-center space-x-2">
                   <Checkbox
-                    id={day}
-                    checked={formData.weeklyAvailability.includes(day)}
-                    onCheckedChange={() => toggleDay(day)}
+                    id={day.id}
+                    checked={formData.weeklyAvailability.includes(day.id)}
+                    onCheckedChange={() => toggleDay(day.id)}
                   />
                   <label
-                    htmlFor={day}
+                    htmlFor={day.id}
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    {getDayLabel(day)}
+                    {day.name} <span className="text-muted-foreground text-xs">({getDayLabel(day.weekDay)})</span>
                   </label>
                 </div>
               ))}

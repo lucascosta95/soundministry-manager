@@ -28,12 +28,14 @@ model SoundOperator {
   monthlyAvailability     Int
   weeklyAvailability      String[]
   annualAvailability      String[]
+  canWorkAlone            Boolean  @default(false)
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
 
   pairsAsFirst            PreferredPair[] @relation("FirstOperator")
   pairsAsSecond           PreferredPair[] @relation("SecondOperator")
   monthlyRestrictions     MonthlyRestriction[]
+  scheduleAssignments     ScheduleAssignment[]
 
   @@map("sound_operators")
 }
@@ -65,4 +67,59 @@ model MonthlyRestriction {
 
   @@unique([operatorId, month, year])
   @@map("monthly_restrictions")
+}
+
+model ServiceDay {
+  id                String   @id @default(cuid())
+  name              String
+  weekDay           Int      // 0=Sunday, 1=Monday, etc.
+  minSoundOperators Int
+  maxSoundOperators Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("service_days")
+}
+
+model Schedule {
+  id        String   @id @default(cuid())
+  month     Int
+  year      Int
+  status    String   @default("DRAFT") // DRAFT, PUBLISHED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events    ScheduleEvent[]
+
+  @@unique([month, year])
+  @@map("schedules")
+}
+
+model ScheduleEvent {
+  id            String   @id @default(cuid())
+  scheduleId    String
+  date          DateTime
+  name          String
+  minOperators  Int      // Snapshot do ServiceDay no momento da geração
+  maxOperators  Int      // Snapshot do ServiceDay no momento da geração
+  
+  schedule      Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  assignments   ScheduleAssignment[]
+
+  @@map("schedule_events")
+}
+
+model ScheduleAssignment {
+  id              String   @id @default(cuid())
+  eventId         String
+  operatorId      String
+  isManual        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  event           ScheduleEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  operator        SoundOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, operatorId])
+  @@map("schedule_assignments")
 }
