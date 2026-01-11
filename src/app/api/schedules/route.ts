@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { generateSchedule } from "@/lib/scheduler"
-import { z } from "zod"
+import {NextRequest, NextResponse} from "next/server"
+import {prisma} from "@/lib/prisma"
+import {generateSchedule} from "@/lib/scheduler"
+import {z} from "zod"
 
 const generateSchema = z.object({
   month: z.number().min(1).max(12),
@@ -55,7 +55,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const generationResult = await generateSchedule({ month, year })
+    const locale = request.cookies.get("NEXT_LOCALE")?.value || process.env.NEXT_PUBLIC_DEFAULT_LOCALE || ""
+    const generationResult = await generateSchedule({ month, year, locale })
 
     if (!generationResult.success) {
       return NextResponse.json(

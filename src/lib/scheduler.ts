@@ -1,10 +1,12 @@
-import { PrismaClient, ServiceDay, SoundOperator, PreferredPair, MonthlyRestriction, Schedule, ScheduleEvent, ScheduleAssignment } from "@prisma/client"
-import { prisma } from "@/lib/prisma"
-import { subMonths, startOfMonth, endOfMonth, subDays, isSameDay } from "date-fns"
+import {ServiceDay, SoundOperator} from "@prisma/client"
+import {prisma} from "@/lib/prisma"
+import {isSameDay, subDays, subMonths} from "date-fns"
+import {getTranslations} from "next-intl/server"
 
 interface SchedulerOptions {
   month: number
   year: number
+  locale: string
 }
 
 interface SchedulerResult {
@@ -14,9 +16,10 @@ interface SchedulerResult {
   logs: string[]
 }
 
-export async function generateSchedule({ month, year }: SchedulerOptions): Promise<SchedulerResult> {
+export async function generateSchedule({ month, year, locale }: SchedulerOptions): Promise<SchedulerResult> {
+  const t = await getTranslations({ locale, namespace: "scheduler" })
   const logs: string[] = []
-  logs.push(`Iniciando geração de escala para ${month}/${year}`)
+  logs.push(t("starting", { month, year }))
 
   try {
     const existingSchedule = await prisma.schedule.findUnique({
@@ -24,7 +27,7 @@ export async function generateSchedule({ month, year }: SchedulerOptions): Promi
     })
 
     if (existingSchedule) {
-      return { success: false, error: "Escala já existe", logs }
+      return { success: false, error: t("alreadyExists"), logs }
     }
 
     const serviceDays = await prisma.serviceDay.findMany()
@@ -108,7 +111,7 @@ export async function generateSchedule({ month, year }: SchedulerOptions): Promi
       }
     }
 
-    logs.push(`Gerados ${events.length} eventos`)
+    logs.push(t("generatedEvents", { count: events.length }))
 
     const schedule = await prisma.schedule.create({
       data: {
@@ -248,16 +251,21 @@ export async function generateSchedule({ month, year }: SchedulerOptions): Promi
       }
 
       if (allocated.length < event.serviceDay.minSoundOperators) {
-        logs.push(`${eventLogPrefix} AVISO: Não foi possível atingir o mínimo de operadores. Alocados: ${allocated.length}, Necessários: ${event.serviceDay.minSoundOperators}`)
+        logs.push(t("minOperatorsWarning", {
+          date: event.date.toISOString().split('T')[0],
+          service: event.serviceDay.name,
+          allocated: allocated.length,
+          needed: event.serviceDay.minSoundOperators
+        }))
       }
     }
 
-    logs.push("Geração de escala concluída com sucesso")
+    logs.push(t("success"))
     return { success: true, scheduleId: schedule.id, logs }
 
   } catch (error: any) {
     console.error(error)
-    logs.push(`ERRO: ${error.message}`)
+    logs.push(t("error", { message: error.message }))
     return { success: false, error: error.message, logs }
   }
 }

@@ -249,5 +249,13 @@
     "october": "Outubro",
     "november": "Novembro",
     "december": "Dezembro"
+  },
+  "scheduler": {
+    "starting": "Iniciando geração de escala para {month}/{year}",
+    "alreadyExists": "Escala já existe",
+    "generatedEvents": "Gerados {count} eventos",
+    "minOperatorsWarning": "[{date} - {service}] AVISO: Não foi possível atingir o mínimo de operadores. Alocados: {allocated}, Necessários: {needed}",
+    "success": "Geração de escala concluída com sucesso",
+    "error": "ERRO: {message}"
   }
 }

@@ -1,9 +1,9 @@
-import { getRequestConfig } from 'next-intl/server';
-import { headers } from 'next/headers';
+import {getRequestConfig} from 'next-intl/server';
+import {headers} from 'next/headers';
 
 export default getRequestConfig(async () => {
   const headersList = await headers();
-  const locale = headersList.get('x-locale') || 'pt-BR';
+  const locale = headersList.get('x-locale') || process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
 
   return {
     locale,

@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getIronSession } from "iron-session"
-import { sessionOptions, SessionData } from "@/lib/session"
-import { prisma } from "@/lib/prisma"
+import {NextRequest, NextResponse} from "next/server"
+import {getIronSession} from "iron-session"
+import {SessionData, sessionOptions} from "@/lib/session"
+import {prisma} from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
-const DEFAULT_PASSWORD = "SoundMinistry@2024"
+const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD || ""
 
 async function checkAdminPermission(request: NextRequest, response: NextResponse) {
   const session = await getIronSession<SessionData>(request, response, sessionOptions)

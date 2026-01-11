@@ -247,5 +247,13 @@
     "october": "October",
     "november": "November",
     "december": "December"
+  },
+  "scheduler": {
+    "starting": "Starting schedule generation for {month}/{year}",
+    "alreadyExists": "Schedule already exists",
+    "generatedEvents": "Generated {count} events",
+    "minOperatorsWarning": "[{date} - {service}] WARNING: Could not meet minimum operators. Allocated: {allocated}, Needed: {needed}",
+    "success": "Schedule generation completed successfully",
+    "error": "ERROR: {message}"
   }
 }

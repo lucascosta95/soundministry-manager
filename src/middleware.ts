@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getIronSession } from "iron-session"
-import { sessionOptions, SessionData } from "@/lib/session"
+import {NextRequest, NextResponse} from "next/server"
+import {getIronSession} from "iron-session"
+import {SessionData, sessionOptions} from "@/lib/session"
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
   
-  const locale = request.cookies.get("NEXT_LOCALE")?.value || "pt-BR"
+  const locale = request.cookies.get("NEXT_LOCALE")?.value || process.env.NEXT_PUBLIC_DEFAULT_LOCALE || ""
   response.headers.set("x-locale", locale)
 
   const session = await getIronSession<SessionData>(request, response, sessionOptions)

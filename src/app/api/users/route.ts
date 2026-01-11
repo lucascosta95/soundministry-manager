@@ -1,18 +1,18 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getIronSession } from "iron-session"
-import { sessionOptions, SessionData } from "@/lib/session"
-import { prisma } from "@/lib/prisma"
-import { z } from "zod"
+import {NextRequest, NextResponse} from "next/server"
+import {getIronSession} from "iron-session"
+import {SessionData, sessionOptions} from "@/lib/session"
+import {prisma} from "@/lib/prisma"
+import {z} from "zod"
 import bcrypt from "bcryptjs"
 
+const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD || ""
+
 const userSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, "Name is required"),
   email: z.string().email(),
   password: z.string().min(6).optional(),
   role: z.enum(["USER", "ADMIN"]).default("USER"),
 })
-
-const DEFAULT_PASSWORD = "SoundMinistry@2024"
 
 async function checkAdminPermission(request: NextRequest, response: NextResponse) {
   const session = await getIronSession<SessionData>(request, response, sessionOptions)
