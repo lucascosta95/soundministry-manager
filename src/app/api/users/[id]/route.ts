@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getIronSession } from "iron-session"
-import { sessionOptions, SessionData } from "@/lib/session"
-import { prisma } from "@/lib/prisma"
-import { z } from "zod"
-import bcrypt from "bcryptjs"
+import {NextRequest, NextResponse} from "next/server"
+import {getIronSession} from "iron-session"
+import {SessionData, sessionOptions} from "@/lib/session"
+import {prisma} from "@/lib/prisma"
+import {z} from "zod"
 
 const userSchema = z.object({
   name: z.string().min(1),

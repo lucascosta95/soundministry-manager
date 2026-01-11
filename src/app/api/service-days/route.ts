@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { z } from "zod"
+import {NextRequest, NextResponse} from "next/server"
+import {prisma} from "@/lib/prisma"
+import {z} from "zod"
 
 const serviceDaySchema = z.object({
   name: z.string().min(1),

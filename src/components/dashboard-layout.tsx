@@ -1,14 +1,27 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import {useTranslations} from "next-intl"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageSwitcher } from "@/components/language-switcher"
-import { Music, Users, UsersRound, CalendarX, LogOut, Menu, ChevronDown, ChevronRight, FolderOpen, UserCircle, Settings, CalendarDays, CalendarClock } from "lucide-react"
-import { useState } from "react"
+import {usePathname, useRouter} from "next/navigation"
+import {cn} from "@/lib/utils"
+import {Button} from "@/components/ui/button"
+import {ThemeToggle} from "@/components/theme-toggle"
+import {LanguageSwitcher} from "@/components/language-switcher"
+import {
+  CalendarDays,
+  CalendarX,
+  ChevronDown,
+  ChevronRight,
+  FolderOpen,
+  LogOut,
+  Menu,
+  Music,
+  Settings,
+  UserCircle,
+  Users,
+  UsersRound
+} from "lucide-react"
+import {useState} from "react"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations("nav")

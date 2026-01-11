@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import {useTranslations} from "next-intl"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +11,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useState } from "react"
-import { Loader2 } from "lucide-react"
+import {useState} from "react"
+import {Loader2} from "lucide-react"
 
 interface ResetPasswordDialogProps {
   open: boolean

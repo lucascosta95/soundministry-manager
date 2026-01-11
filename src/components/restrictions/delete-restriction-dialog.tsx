@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
+import {useState} from "react"
+import {useTranslations} from "next-intl"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useToast } from "@/components/ui/use-toast"
+import {useToast} from "@/components/ui/use-toast"
 
 export type MonthlyRestriction = {
   id: string

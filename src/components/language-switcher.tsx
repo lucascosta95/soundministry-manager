@@ -1,21 +1,9 @@
 "use client"
 
-import { useTransition } from "react"
-import { Languages } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import {useTransition} from "react"
+import {Languages} from "lucide-react"
+import {Button} from "@/components/ui/button"
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 
 export function LanguageSwitcher({ locale }: { locale: string }) {
   const [isPending, startTransition] = useTransition()

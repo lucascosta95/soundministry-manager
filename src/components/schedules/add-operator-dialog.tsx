@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useTranslations } from "next-intl"
-import { Check, ChevronsUpDown, UserPlus } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {Check, ChevronsUpDown, UserPlus} from "lucide-react"
+import {Button} from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,21 +13,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { useToast } from "@/components/ui/use-toast"
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command"
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
+import {cn} from "@/lib/utils"
+import {useToast} from "@/components/ui/use-toast"
 
 interface SoundOperator {
   id: string

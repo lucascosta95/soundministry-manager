@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
+import {useState} from "react"
+import {useTranslations} from "next-intl"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { useToast } from "@/components/ui/use-toast"
+import {useToast} from "@/components/ui/use-toast"
 
 interface DeleteServiceDayDialogProps {
   children: React.ReactNode

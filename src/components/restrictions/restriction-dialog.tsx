@@ -1,24 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/components/ui/use-toast"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
+import {Button} from "@/components/ui/button"
+import {Label} from "@/components/ui/label"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
+import {Input} from "@/components/ui/input"
+import {useToast} from "@/components/ui/use-toast"
 
 type SoundOperator = {
   id: string

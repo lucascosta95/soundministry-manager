@@ -1,18 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { useToast } from "@/components/ui/use-toast"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Checkbox} from "@/components/ui/checkbox"
+import {useToast} from "@/components/ui/use-toast"
 
 export type SoundOperator = {
   id: string

@@ -1,26 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { useToast } from "@/components/ui/use-toast"
-import { ServiceDay } from "@prisma/client"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {Button} from "@/components/ui/button"
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,} from "@/components/ui/dialog"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
+import {useToast} from "@/components/ui/use-toast"
+import {ServiceDay} from "@prisma/client"
 
 interface ServiceDayDialogProps {
   children: React.ReactNode

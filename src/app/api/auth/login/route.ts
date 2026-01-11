@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getIronSession } from "iron-session"
-import { sessionOptions, SessionData } from "@/lib/session"
-import { prisma } from "@/lib/prisma"
+import {NextRequest, NextResponse} from "next/server"
+import {getIronSession} from "iron-session"
+import {SessionData, sessionOptions} from "@/lib/session"
+import {prisma} from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
 export async function POST(request: NextRequest) {

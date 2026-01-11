@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getIronSession } from "iron-session"
-import { sessionOptions, SessionData } from "@/lib/session"
+import {NextRequest, NextResponse} from "next/server"
+import {getIronSession} from "iron-session"
+import {SessionData, sessionOptions} from "@/lib/session"
 
 export async function POST(request: NextRequest) {
   const response = NextResponse.json({ success: true })

@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
-import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Calendar, Save, Printer, Trash2, Copy, Check } from "lucide-react"
-import { AddOperatorDialog } from "@/components/schedules/add-operator-dialog"
+import {useEffect, useState} from "react"
+import {useTranslations} from "next-intl"
+import {useParams, useRouter} from "next/navigation"
+import {ArrowLeft, Calendar, Check, Copy, Printer, Save, Trash2} from "lucide-react"
+import {AddOperatorDialog} from "@/components/schedules/add-operator-dialog"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,12 +15,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { useToast } from "@/components/ui/use-toast"
-import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import {Badge} from "@/components/ui/badge"
+import {useToast} from "@/components/ui/use-toast"
+import {format} from "date-fns"
+import {ptBR} from "date-fns/locale"
 
 interface Operator {
   id: string
