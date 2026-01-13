@@ -4,14 +4,13 @@ import {useTranslations} from "next-intl"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardHeader} from "@/components/ui/card"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Skeleton} from "@/components/ui/skeleton"
 import {UserDialog} from "@/components/users/user-dialog"
 import {DeleteUserDialog} from "@/components/users/delete-user-dialog"
 import {ResetPasswordDialog} from "@/components/users/reset-password-dialog"
 import {useToast} from "@/components/ui/use-toast"
 import {useEffect, useState} from "react"
-import {KeyRound, MoreHorizontal, Pencil, Plus, Trash2} from "lucide-react"
+import {KeyRound, Pencil, Plus, Trash2} from "lucide-react"
 
 interface User {
   id: string
@@ -89,8 +88,8 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground mt-2">{t("subtitle")}</p>
@@ -121,44 +120,47 @@ export default function UsersPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("name")}</TableHead>
-                  <TableHead>{t("email")}</TableHead>
-                  <TableHead>{t("role")}</TableHead>
-                  <TableHead>{tc("actions")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("email")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("role")}</TableHead>
+                  <TableHead className="text-right">{tc("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {users.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">{user.email}</TableCell>
+                    <TableCell className="hidden md:table-cell">
                       {user.role === "ADMIN" ? t("roleAdmin") : t("roleUser")}
                     </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleEdit(user)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            {tc("edit")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleResetPassword(user)}>
-                            <KeyRound className="mr-2 h-4 w-4" />
-                            {t("resetPassword")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(user)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            {tc("delete")}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(user)}
+                          title={tc("edit")}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleResetPassword(user)}
+                          title={t("resetPassword")}
+                        >
+                          <KeyRound className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDelete(user)}
+                          title={tc("delete")}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

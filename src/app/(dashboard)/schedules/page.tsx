@@ -72,8 +72,8 @@ export default function SchedulesPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground mt-2">
@@ -108,8 +108,8 @@ export default function SchedulesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("month")}</TableHead>
-                  <TableHead>{t("year")}</TableHead>
-                  <TableHead>Eventos</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("year")}</TableHead>
+                  <TableHead className="hidden md:table-cell">Eventos</TableHead>
                   <TableHead>{t("status")}</TableHead>
                   <TableHead className="text-right">{tc("actions")}</TableHead>
                 </TableRow>
@@ -120,10 +120,10 @@ export default function SchedulesPage() {
                     <TableCell className="font-medium">
                       {getMonthName(schedule.month)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       {schedule.year}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       {schedule._count?.events || 0}
                     </TableCell>
                     <TableCell>

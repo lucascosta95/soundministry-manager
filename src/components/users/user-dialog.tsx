@@ -2,14 +2,7 @@
 
 import {useTranslations} from "next-intl"
 import {Button} from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
@@ -33,6 +26,7 @@ interface UserDialogProps {
 
 export function UserDialog({ open, onOpenChange, onSuccess, user }: UserDialogProps) {
   const t = useTranslations("users")
+  const tc = useTranslations("common")
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<User>({
     name: user?.name || "",
@@ -142,20 +136,20 @@ export function UserDialog({ open, onOpenChange, onSuccess, user }: UserDialogPr
               </div>
             )}
           </div>
-          <DialogFooter>
+          <div className="flex justify-end gap-2 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              {t("actions")}
+              {tc("cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {t("actions")}
+              {tc("save")}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

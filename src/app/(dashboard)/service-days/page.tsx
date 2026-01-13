@@ -44,8 +44,8 @@ export default function ServiceDaysPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground mt-2">
@@ -80,9 +80,9 @@ export default function ServiceDaysPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("name")}</TableHead>
-                  <TableHead>{t("weekDay")}</TableHead>
-                  <TableHead className="text-center">{t("minOperators")}</TableHead>
-                  <TableHead className="text-center">{t("maxOperators")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("weekDay")}</TableHead>
+                  <TableHead className="text-center hidden md:table-cell">{t("minOperators")}</TableHead>
+                  <TableHead className="text-center hidden md:table-cell">{t("maxOperators")}</TableHead>
                   <TableHead className="text-right">{tc("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -92,13 +92,13 @@ export default function ServiceDaysPage() {
                     <TableCell className="font-medium">
                       {serviceDay.name}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       {getWeekDayLabel(serviceDay.weekDay)}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center hidden md:table-cell">
                       {serviceDay.minSoundOperators}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center hidden md:table-cell">
                       {serviceDay.maxSoundOperators}
                     </TableCell>
                     <TableCell className="text-right">

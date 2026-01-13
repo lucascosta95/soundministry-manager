@@ -67,7 +67,7 @@ const EventCard = memo(({ event, onRemoveAssignment, operators, onSuccess }: {
   return (
     <Card>
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <CardTitle className="text-lg">
@@ -77,13 +77,15 @@ const EventCard = memo(({ event, onRemoveAssignment, operators, onSuccess }: {
               </span>
             </CardTitle>
           </div>
-          <Badge variant="outline">{event.name}</Badge>
-          <AddOperatorDialog 
-            eventId={event.id} 
-            onSuccess={onSuccess}
-            assignedOperatorIds={event.assignments.map(a => a.operator.id)}
-            operators={operators}
-          />
+          <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
+            <Badge variant="outline">{event.name}</Badge>
+            <AddOperatorDialog 
+              eventId={event.id} 
+              onSuccess={onSuccess}
+              assignedOperatorIds={event.assignments.map(a => a.operator.id)}
+              operators={operators}
+            />
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -225,7 +227,7 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => router.push("/schedules")}>
             <ArrowLeft className="h-4 w-4" />
@@ -244,18 +246,19 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
-            <Button variant="outline" onClick={handleCopyToClipboard}>
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            <Button variant="outline" onClick={handleCopyToClipboard} className="flex-1 sm:flex-none">
                 {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
                 {copied ? t("copied") : t("copy")}
             </Button>
-            <Button variant="outline" onClick={() => window.print()}>
+            <Button variant="outline" onClick={() => window.print()} className="hidden sm:flex">
                 <Printer className="mr-2 h-4 w-4" />
                 {t("print")}
             </Button>
             <Button 
                 onClick={handleUpdateStatus}
                 variant={schedule.status === "PUBLISHED" ? "secondary" : "default"}
+                className="flex-1 sm:flex-none"
             >
                 {schedule.status === "PUBLISHED" ? (
                     <>
