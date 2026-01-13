@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "SoundMinistry Manager",
   description: "Management system for sound team",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default async function RootLayout({
