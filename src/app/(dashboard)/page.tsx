@@ -1,12 +1,10 @@
 "use client"
 
-import {useTranslations} from "next-intl"
+import {useFormatter, useTranslations} from "next-intl"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import {ArrowRight, Calendar as CalendarIcon, CalendarX, Users, UsersRound} from "lucide-react"
 import {useEffect, useState} from "react"
 import Link from "next/link"
-import {format} from "date-fns"
-import {ptBR} from "date-fns/locale"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
 import {Skeleton} from "@/components/ui/skeleton"
@@ -38,6 +36,7 @@ interface UserProfile {
 export default function DashboardPage() {
   const t = useTranslations("dashboard")
   const tn = useTranslations("nav")
+  const formatDateTime = useFormatter()
   const [stats, setStats] = useState({
     operators: 0,
     pairs: 0,
@@ -46,8 +45,11 @@ export default function DashboardPage() {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [currentSchedule, setCurrentSchedule] = useState<Schedule | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [currentDate, setCurrentDate] = useState<Date | null>(null)
 
   useEffect(() => {
+    setCurrentDate(new Date())
+
     const fetchData = async () => {
       try {
         const [operatorsRes, pairsRes, restrictionsRes, profileRes, schedulesRes] = await Promise.all([
@@ -104,7 +106,8 @@ export default function DashboardPage() {
   }, [])
 
   const getGreeting = () => {
-    const hour = new Date().getHours()
+    const date = currentDate || new Date()
+    const hour = date.getHours()
     const name = user?.name?.split(" ")[0] || ""
     
     if (hour >= 5 && hour < 12) return t("goodMorning", { name })
@@ -115,7 +118,7 @@ export default function DashboardPage() {
   const getMonthName = (month: number) => {
     const date = new Date()
     date.setMonth(month - 1)
-    return format(date, "MMMM", { locale: ptBR })
+    return formatDateTime.dateTime(date, { month: 'long' })
   }
 
   const cards = [
@@ -217,7 +220,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{getGreeting()}</h1>
         <p className="text-muted-foreground mt-2">
-          {format(new Date(), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
+          {currentDate && formatDateTime.dateTime(currentDate, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).replace(/^\w/, (c) => c.toUpperCase())}
         </p>
       </div>
 
@@ -249,11 +252,11 @@ export default function DashboardPage() {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold tracking-tight">Escala de {currentSchedule ? getMonthName(currentSchedule.month) : "Este Mês"}</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">{t("scheduleOf")} {currentSchedule ? getMonthName(currentSchedule.month) : t("thisMonth")}</h2>
             {currentSchedule && (
                 <Link href={`/schedules/${currentSchedule.id}`}>
                     <Button variant="outline" size="sm">
-                        Ver Completa <ArrowRight className="ml-2 h-4 w-4" />
+                        {t("viewComplete")} <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                 </Link>
             )}
@@ -268,7 +271,7 @@ export default function DashboardPage() {
                                 <div className="flex items-center gap-2">
                                     <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                                     <span className="font-medium">
-                                        {format(new Date(event.date), "dd/MM", { locale: ptBR })}
+                                        {formatDateTime.dateTime(new Date(event.date), { day: '2-digit', month: '2-digit' })}
                                     </span>
                                 </div>
                                 <Badge variant="secondary" className="text-xs">{event.name}</Badge>
@@ -284,7 +287,7 @@ export default function DashboardPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <span className="text-sm text-muted-foreground italic">Sem operadores</span>
+                                    <span className="text-sm text-muted-foreground italic">{t("noOperators")}</span>
                                 )}
                             </div>
                         </CardContent>
@@ -295,12 +298,12 @@ export default function DashboardPage() {
             <Card className="bg-muted/50 border-dashed">
                 <CardContent className="flex flex-col items-center justify-center py-10 text-center">
                     <CalendarIcon className="h-10 w-10 text-muted-foreground mb-4" />
-                    <h3 className="font-semibold text-lg">Nenhuma escala encontrada para este mês</h3>
+                    <h3 className="font-semibold text-lg">{t("noScheduleFound")}</h3>
                     <p className="text-muted-foreground text-sm mt-1 mb-4">
-                        A escala deste mês ainda não foi gerada.
+                        {t("noScheduleFoundDesc")}
                     </p>
                     <Link href="/schedules">
-                        <Button>Ir para Escalas</Button>
+                        <Button>{t("goToSchedules")}</Button>
                     </Link>
                 </CardContent>
             </Card>

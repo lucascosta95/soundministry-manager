@@ -30,7 +30,14 @@
     "manageRestrictions": "Manage monthly restrictions",
     "goodMorning": "Good morning, {name}",
     "goodAfternoon": "Good afternoon, {name}",
-    "goodEvening": "Good evening, {name}"
+    "goodEvening": "Good evening, {name}",
+    "viewComplete": "View Complete",
+    "thisMonth": "This Month",
+    "noOperators": "No operators",
+    "noScheduleFound": "No schedule found for this month",
+    "noScheduleFoundDesc": "This month's schedule has not been generated yet.",
+    "goToSchedules": "Go to Schedules",
+    "scheduleOf": "Schedule of"
   },
   "auth": {
     "login": "Login",

@@ -30,7 +30,14 @@
     "manageRestrictions": "Gerenciar restrições mensais",
     "goodMorning": "Bom dia, {name}",
     "goodAfternoon": "Boa tarde, {name}",
-    "goodEvening": "Boa noite, {name}"
+    "goodEvening": "Boa noite, {name}",
+    "viewComplete": "Ver Completa",
+    "thisMonth": "Este Mês",
+    "noOperators": "Sem operadores",
+    "noScheduleFound": "Nenhuma escala encontrada para este mês",
+    "noScheduleFoundDesc": "A escala deste mês ainda não foi gerada.",
+    "goToSchedules": "Ir para Escalas",
+    "scheduleOf": "Escala de"
   },
   "auth": {
     "login": "Entrar",
