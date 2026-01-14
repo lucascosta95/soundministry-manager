@@ -8,6 +8,7 @@ import {Label} from "@/components/ui/label"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {useState} from "react"
 import {Loader2} from "lucide-react"
+import {createUser, updateUser} from "@/actions/users"
 
 interface User {
   id?: string
@@ -40,32 +41,24 @@ export function UserDialog({ open, onOpenChange, onSuccess, user }: UserDialogPr
     setLoading(true)
 
     try {
-      const url = user ? `/api/users/${user.id}` : "/api/users"
-      const method = user ? "PUT" : "POST"
-      
-      const body: any = {
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-      }
+        const formDataObj = new FormData()
+        formDataObj.append("name", formData.name)
+        formDataObj.append("email", formData.email)
+        formDataObj.append("role", formData.role)
+        if (!user && formData.password) {
+            formDataObj.append("password", formData.password)
+        }
 
-      if (!user && formData.password) {
-        body.password = formData.password
-      }
+        const result = user
+            ? await updateUser(user.id!, {}, formDataObj)
+            : await createUser({}, formDataObj)
 
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-
-      if (response.ok) {
+      if (result.success) {
         onSuccess()
         onOpenChange(false)
         setFormData({ name: "", email: "", role: "USER", password: "" })
       } else {
-        const data = await response.json()
-        alert(data.error || t("createError"))
+        alert(result.error || t("createError"))
       }
     } catch (error) {
       alert(t("createError"))

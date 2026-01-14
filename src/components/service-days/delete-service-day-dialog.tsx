@@ -14,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {useToast} from "@/components/ui/use-toast"
+import {deleteServiceDay} from "@/actions/service-days"
 
 interface DeleteServiceDayDialogProps {
   children: React.ReactNode
@@ -31,11 +32,9 @@ export function DeleteServiceDayDialog({ children, id, onSuccess }: DeleteServic
   const handleDelete = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/service-days/${id}`, {
-        method: "DELETE",
-      })
+      const result = await deleteServiceDay(id)
 
-      if (!response.ok) throw new Error()
+      if (!result.success) throw new Error()
 
       toast({
         title: t("deleteSuccess"),

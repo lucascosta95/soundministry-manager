@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import {useState} from "react"
 import {Loader2} from "lucide-react"
+import {resetPassword} from "@/actions/users"
 
 interface ResetPasswordDialogProps {
   open: boolean
@@ -29,16 +30,13 @@ export function ResetPasswordDialog({ open, onOpenChange, onSuccess, userId }: R
   const handleReset = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/users/${userId}/reset-password`, {
-        method: "POST",
-      })
+      const result = await resetPassword(userId)
 
-      if (response.ok) {
+      if (result.success) {
         onSuccess()
         onOpenChange(false)
       } else {
-        const data = await response.json()
-        alert(data.error || t("resetPasswordError"))
+        alert(result.error || t("resetPasswordError"))
       }
     } catch (error) {
       alert(t("resetPasswordError"))

@@ -7,6 +7,7 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,} from "
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import {Label} from "@/components/ui/label"
 import {useToast} from "@/components/ui/use-toast"
+import {generateScheduleAction} from "@/actions/schedules"
 
 interface GenerateScheduleDialogProps {
   children: React.ReactNode
@@ -46,18 +47,14 @@ export function GenerateScheduleDialog({ children, onSuccess }: GenerateSchedule
 
     setLoading(true)
     try {
-      const response = await fetch("/api/schedules", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          month: parseInt(month),
-          year: parseInt(year),
-        }),
-      })
+        const formData = new FormData()
+        formData.append("month", month)
+        formData.append("year", year)
 
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.error || t("error"))
+        const result = await generateScheduleAction({}, formData)
+
+      if (!result.success) {
+        throw new Error(result.error || t("error"))
       }
 
       toast({

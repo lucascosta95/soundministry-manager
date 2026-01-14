@@ -19,6 +19,8 @@ import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import {Badge} from "@/components/ui/badge"
 import {useToast} from "@/components/ui/use-toast"
+import {updateScheduleStatus} from "@/actions/schedules"
+import {deleteAssignment} from "@/actions/assignments"
 
 interface Operator {
   id: string
@@ -147,13 +149,9 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
     const newStatus = schedule.status === "DRAFT" ? "PUBLISHED" : "DRAFT"
     
     try {
-      const response = await fetch(`/api/schedules/${schedule.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      })
+        const result = await updateScheduleStatus(schedule.id, newStatus)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: newStatus === "PUBLISHED" ? t("publishSuccess") : t("revertSuccess"),
         })
@@ -200,11 +198,9 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
     if (!assignmentToDelete) return
 
     try {
-      const response = await fetch(`/api/assignments/${assignmentToDelete}`, {
-        method: "DELETE",
-      })
+        const result = await deleteAssignment(assignmentToDelete)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: t("removeOperatorSuccess"),
         })

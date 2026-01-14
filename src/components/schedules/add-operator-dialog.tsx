@@ -17,6 +17,7 @@ import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandL
 import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
 import {cn} from "@/lib/utils"
 import {useToast} from "@/components/ui/use-toast"
+import {createAssignment} from "@/actions/assignments"
 
 interface SoundOperator {
   id: string
@@ -44,18 +45,9 @@ export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds, ope
 
     setSaving(true)
     try {
-      const response = await fetch("/api/assignments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventId,
-          operatorId: selectedOperatorId,
-        }),
-      })
+        const result = await createAssignment(eventId, selectedOperatorId)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: t("operatorAddedSuccess"),
           description: t("operatorAddedSuccess"),
@@ -64,10 +56,9 @@ export function AddOperatorDialog({ eventId, onSuccess, assignedOperatorIds, ope
         setOpen(false)
         setSelectedOperatorId("")
       } else {
-        const error = await response.json()
         toast({
           title: t("addOperatorErrorGeneric"),
-          description: error.error || t("addOperatorError"),
+          description: result.error || t("addOperatorError"),
           variant: "destructive",
         })
       }

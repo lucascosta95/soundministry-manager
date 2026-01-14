@@ -10,14 +10,27 @@ export async function middleware(request: NextRequest) {
 
   const session = await getIronSession<SessionData>(request, response, sessionOptions)
   
-  const isLoginPage = request.nextUrl.pathname === "/login"
+  const path = request.nextUrl.pathname
   const isAuthenticated = session.isLoggedIn
 
-  if (!isAuthenticated && !isLoginPage) {
+  // Define public routes that don't require authentication
+  const isPublicRoute = 
+    path === "/login" || 
+    path.startsWith("/api/auth/")
+
+  if (!isAuthenticated && !isPublicRoute) {
+    // For API routes, return 401 Unauthorized instead of redirecting
+    if (path.startsWith("/api/")) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+    // For pages, redirect to login
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
-  if (isAuthenticated && isLoginPage) {
+  if (isAuthenticated && path === "/login") {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
@@ -33,6 +46,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\..*|api).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 }

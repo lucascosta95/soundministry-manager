@@ -8,6 +8,7 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Checkbox} from "@/components/ui/checkbox"
 import {useToast} from "@/components/ui/use-toast"
+import {createOperator, updateOperator} from "@/actions/operators"
 
 export type SoundOperator = {
   id: string
@@ -24,6 +25,7 @@ type OperatorDialogProps = {
   onOpenChange: (open: boolean) => void
   operator: SoundOperator | null
   onSuccess: () => void
+  serviceDays: { id: string; name: string; weekDay: number }[]
 }
 
 const MONTHS = [
@@ -36,20 +38,13 @@ export function OperatorDialog({
   onOpenChange,
   operator,
   onSuccess,
+  serviceDays,
 }: OperatorDialogProps) {
   const t = useTranslations("operators")
   const tm = useTranslations("months")
   const tc = useTranslations("common")
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
-  const [serviceDays, setServiceDays] = useState<{ id: string; name: string; weekDay: number }[]>([])
-
-  useEffect(() => {
-    fetch("/api/service-days")
-      .then((res) => res.json())
-      .then((data) => setServiceDays(data))
-      .catch((err) => console.error("Failed to fetch service days", err))
-  }, [])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -87,28 +82,30 @@ export function OperatorDialog({
     setIsLoading(true)
 
     try {
-      const url = operator
-        ? `/api/operators/${operator.id}`
-        : "/api/operators"
-      const method = operator ? "PUT" : "POST"
+        const formDataObj = new FormData()
+        formDataObj.append("name", formData.name)
+        formDataObj.append("birthday", formData.birthday)
+        formDataObj.append("monthlyAvailability", formData.monthlyAvailability.toString())
+        formDataObj.append("weeklyAvailability", JSON.stringify(formData.weeklyAvailability))
+        formDataObj.append("annualAvailability", JSON.stringify(formData.annualAvailability))
+        if (formData.canWorkAlone) {
+            formDataObj.append("canWorkAlone", "on")
+        }
 
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
+        const result = operator
+            ? await updateOperator(operator.id, {}, formDataObj)
+            : await createOperator({}, formDataObj)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: tc("save"),
           description: t("success"),
         })
         onSuccess()
       } else {
-        const error = await response.json()
         toast({
           title: "Erro",
-          description: error.error || t("error"),
+          description: result.error || t("error"),
           variant: "destructive",
         })
       }

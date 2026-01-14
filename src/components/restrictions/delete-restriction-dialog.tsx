@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import {useToast} from "@/components/ui/use-toast"
+import {deleteRestriction} from "@/actions/restrictions"
 
 export type MonthlyRestriction = {
   id: string
@@ -47,11 +48,9 @@ export function DeleteRestrictionDialog({
 
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/restrictions/${restriction.id}`, {
-        method: "DELETE",
-      })
+      const result = await deleteRestriction(restriction.id)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: tc("delete"),
           description: t("deleteSuccess"),
@@ -60,7 +59,7 @@ export function DeleteRestrictionDialog({
       } else {
         toast({
           title: "Erro",
-          description: t("error"),
+          description: result.error || t("error"),
           variant: "destructive",
         })
       }

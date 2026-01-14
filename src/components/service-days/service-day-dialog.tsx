@@ -9,6 +9,7 @@ import {Label} from "@/components/ui/label"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import {useToast} from "@/components/ui/use-toast"
 import {ServiceDay} from "@prisma/client"
+import {createServiceDay, updateServiceDay} from "@/actions/service-days"
 
 interface ServiceDayDialogProps {
   children: React.ReactNode
@@ -48,24 +49,17 @@ export function ServiceDayDialog({ children, serviceDay, onSuccess }: ServiceDay
     setLoading(true)
 
     try {
-      const url = serviceDay 
-        ? `/api/service-days/${serviceDay.id}`
-        : "/api/service-days"
-      
-      const method = serviceDay ? "PUT" : "POST"
+        const formData = new FormData()
+        formData.append("name", name)
+        formData.append("weekDay", weekDay)
+        formData.append("minSoundOperators", minSoundOperators)
+        formData.append("maxSoundOperators", maxSoundOperators)
 
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          weekDay: parseInt(weekDay),
-          minSoundOperators: parseInt(minSoundOperators),
-          maxSoundOperators: parseInt(maxSoundOperators),
-        }),
-      })
+        const result = serviceDay
+            ? await updateServiceDay(serviceDay.id, {}, formData)
+            : await createServiceDay({}, formData)
 
-      if (!response.ok) throw new Error()
+      if (!result.success) throw new Error(result.error)
 
       toast({
         title: t("success"),

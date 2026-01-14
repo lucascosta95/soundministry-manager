@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import {useState} from "react"
 import {Loader2} from "lucide-react"
+import {deleteUser} from "@/actions/users"
 
 interface DeleteUserDialogProps {
   open: boolean
@@ -29,16 +30,13 @@ export function DeleteUserDialog({ open, onOpenChange, onSuccess, userId }: Dele
   const handleDelete = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/users/${userId}`, {
-        method: "DELETE",
-      })
+      const result = await deleteUser(userId)
 
-      if (response.ok) {
+      if (result.success) {
         onSuccess()
         onOpenChange(false)
       } else {
-        const data = await response.json()
-        alert(data.error || t("deleteError"))
+        alert(result.error || t("deleteError"))
       }
     } catch (error) {
       alert(t("deleteError"))

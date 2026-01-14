@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import {useToast} from "@/components/ui/use-toast"
+import {deleteOperator} from "@/actions/operators"
 
 type SoundOperator = {
   id: string
@@ -42,11 +43,9 @@ export function DeleteOperatorDialog({
 
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/operators/${operator.id}`, {
-        method: "DELETE",
-      })
+      const result = await deleteOperator(operator.id)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: tc("delete"),
           description: t("deleteSuccess"),
@@ -55,7 +54,7 @@ export function DeleteOperatorDialog({
       } else {
         toast({
           title: "Erro",
-          description: t("error"),
+          description: result.error || t("error"),
           variant: "destructive",
         })
       }

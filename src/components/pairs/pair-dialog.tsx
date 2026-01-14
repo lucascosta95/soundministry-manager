@@ -7,6 +7,7 @@ import {Button} from "@/components/ui/button"
 import {Label} from "@/components/ui/label"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import {useToast} from "@/components/ui/use-toast"
+import {createPair} from "@/actions/pairs"
 
 type SoundOperator = {
   id: string
@@ -17,18 +18,19 @@ type PairDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess: () => void
+  operators: SoundOperator[]
 }
 
 export function PairDialog({
   open,
   onOpenChange,
   onSuccess,
+  operators,
 }: PairDialogProps) {
   const t = useTranslations("pairs")
   const tc = useTranslations("common")
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
-  const [operators, setOperators] = useState<SoundOperator[]>([])
 
   const [formData, setFormData] = useState({
     firstOperatorId: "",
@@ -37,20 +39,9 @@ export function PairDialog({
 
   useEffect(() => {
     if (open) {
-      fetchOperators()
       setFormData({ firstOperatorId: "", secondOperatorId: "" })
     }
   }, [open])
-
-  const fetchOperators = async () => {
-    try {
-      const response = await fetch("/api/operators")
-      const data = await response.json()
-      setOperators(data)
-    } catch (error) {
-      console.error("Failed to fetch operators:", error)
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,27 +58,26 @@ export function PairDialog({
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/pairs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
+        const formDataObj = new FormData()
+        formDataObj.append("firstOperatorId", formData.firstOperatorId)
+        formDataObj.append("secondOperatorId", formData.secondOperatorId)
 
-      if (response.ok) {
+        const result = await createPair({}, formDataObj)
+
+      if (result.success) {
         toast({
           title: tc("save"),
           description: t("success"),
         })
         onSuccess()
       } else {
-        const error = await response.json()
         let errorMessage = t("error")
         
-        if (error.error === "Operators must be different") {
+        if (result.error === "Operators must be different") {
           errorMessage = t("sameOperatorError")
-        } else if (error.error === "Pair already exists") {
+        } else if (result.error === "Pair already exists") {
           errorMessage = t("duplicateError")
-        } else if (error.error.includes("availability")) {
+        } else if (result.error?.includes("availability")) {
           errorMessage = t("incompatibilityError")
         }
 

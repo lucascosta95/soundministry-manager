@@ -14,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {useToast} from "@/components/ui/use-toast"
+import {deleteScheduleAction} from "@/actions/schedules"
 
 interface DeleteScheduleDialogProps {
   children: React.ReactNode
@@ -31,11 +32,9 @@ export function DeleteScheduleDialog({ children, id, onSuccess }: DeleteSchedule
   const handleDelete = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/schedules/${id}`, {
-        method: "DELETE",
-      })
+      const result = await deleteScheduleAction(id)
 
-      if (!response.ok) throw new Error()
+      if (!result.success) throw new Error()
 
       toast({
         title: t("deleteSuccess"),

@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import {useToast} from "@/components/ui/use-toast"
+import {deletePair} from "@/actions/pairs"
 
 type PreferredPair = {
   id: string
@@ -47,11 +48,9 @@ export function DeletePairDialog({
 
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/pairs/${pair.id}`, {
-        method: "DELETE",
-      })
+      const result = await deletePair(pair.id)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: tc("delete"),
           description: t("deleteSuccess"),
@@ -60,7 +59,7 @@ export function DeletePairDialog({
       } else {
         toast({
           title: "Erro",
-          description: t("error"),
+          description: result.error || t("error"),
           variant: "destructive",
         })
       }

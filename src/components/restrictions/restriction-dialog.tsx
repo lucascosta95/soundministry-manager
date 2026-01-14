@@ -8,6 +8,7 @@ import {Label} from "@/components/ui/label"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import {Input} from "@/components/ui/input"
 import {useToast} from "@/components/ui/use-toast"
+import {createRestriction, updateRestriction} from "@/actions/restrictions"
 
 type SoundOperator = {
   id: string
@@ -30,6 +31,7 @@ type RestrictionDialogProps = {
   onOpenChange: (open: boolean) => void
   restriction: MonthlyRestriction | null
   onSuccess: () => void
+  operators: SoundOperator[]
 }
 
 export function RestrictionDialog({
@@ -37,13 +39,13 @@ export function RestrictionDialog({
   onOpenChange,
   restriction,
   onSuccess,
+  operators,
 }: RestrictionDialogProps) {
   const t = useTranslations("restrictions")
   const tm = useTranslations("months")
   const tc = useTranslations("common")
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
-  const [operators, setOperators] = useState<SoundOperator[]>([])
 
   const currentYear = new Date().getFullYear()
 
@@ -58,7 +60,6 @@ export function RestrictionDialog({
 
   useEffect(() => {
     if (open) {
-      fetchOperators()
       if (restriction) {
         setFormData({
           operatorId: restriction.operatorId,
@@ -79,16 +80,6 @@ export function RestrictionDialog({
     }
   }, [open, restriction])
 
-  const fetchOperators = async () => {
-    try {
-      const response = await fetch("/api/operators")
-      const data = await response.json()
-      setOperators(data)
-    } catch (error) {
-      console.error("Failed to fetch operators:", error)
-    }
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -99,28 +90,26 @@ export function RestrictionDialog({
     }
 
     try {
-      const url = restriction
-        ? `/api/restrictions/${restriction.id}`
-        : "/api/restrictions"
-      const method = restriction ? "PUT" : "POST"
+        const formDataObj = new FormData()
+        formDataObj.append("operatorId", submitData.operatorId)
+        formDataObj.append("month", submitData.month.toString())
+        formDataObj.append("year", submitData.year.toString())
+        formDataObj.append("restrictedDays", JSON.stringify(submitData.restrictedDays))
 
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submitData),
-      })
+        const result = restriction
+            ? await updateRestriction(restriction.id, {}, formDataObj)
+            : await createRestriction({}, formDataObj)
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: tc("save"),
           description: t("success"),
         })
         onSuccess()
       } else {
-        const error = await response.json()
         let errorMessage = t("error")
         
-        if (error.error?.includes("already exists")) {
+        if (result.error?.includes("already exists")) {
           errorMessage = t("duplicateError")
         }
 
