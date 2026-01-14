@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description: "Management system for sound team",
   icons: {
     icon: "/icon.png",
+    apple: "/icons/maskable_icon_x192.png",
   },
 };
 
