@@ -12,6 +12,7 @@ import {Music} from "lucide-react"
 import {ThemeToggle} from "@/components/theme-toggle"
 import {LanguageSwitcher} from "@/components/language-switcher"
 import {useTheme} from "next-themes"
+import {login as loginAction} from "@/actions/auth"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -28,19 +29,16 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
+      const formData = new FormData()
+      formData.append("email", email)
+      formData.append("password", password)
 
-      if (response.ok) {
-        const data = await response.json()
-        
-        if (data.user?.preferredTheme) {
-          setTheme(data.user.preferredTheme)
+      const result = await loginAction({}, formData)
+
+      if (result.success) {
+        if (result.user?.preferredTheme) {
+          setTheme(result.user.preferredTheme)
         }
-        
         router.push("/")
         router.refresh()
       } else {

@@ -15,8 +15,7 @@ export async function middleware(request: NextRequest) {
 
   // Define public routes that don't require authentication
   const isPublicRoute = 
-    path === "/login" || 
-    path.startsWith("/api/auth/")
+    path === "/login"
 
   if (!isAuthenticated && !isPublicRoute) {
     // For API routes, return 401 Unauthorized instead of redirecting

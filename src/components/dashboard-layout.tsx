@@ -22,6 +22,7 @@ import {
   UsersRound
 } from "lucide-react"
 import {useState} from "react"
+import {logout as logoutAction} from "@/actions/auth"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations("nav")
@@ -32,7 +33,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isRecordsOpen, setIsRecordsOpen] = useState(true)
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" })
+    await logoutAction()
     router.push("/login")
     router.refresh()
   }
