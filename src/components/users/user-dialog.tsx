@@ -6,7 +6,7 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} fr
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {Loader2} from "lucide-react"
 import {createUser, updateUser} from "@/actions/users"
 
@@ -29,12 +29,16 @@ export function UserDialog({ open, onOpenChange, onSuccess, user }: UserDialogPr
   const t = useTranslations("users")
   const tc = useTranslations("common")
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState<User>({
-    name: user?.name || "",
-    email: user?.email || "",
-    role: user?.role || "USER",
+  const buildInitialFormData = (u?: User): User => ({
+    name: u?.name || "",
+    email: u?.email || "",
+    role: u?.role || "USER",
     password: "",
   })
+  const [formData, setFormData] = useState<User>(buildInitialFormData(user))
+  useEffect(() => {
+    setFormData(buildInitialFormData(user))
+  }, [user, open])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
