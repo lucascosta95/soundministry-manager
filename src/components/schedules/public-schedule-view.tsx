@@ -99,7 +99,7 @@ export function PublicScheduleView({ schedule }: PublicScheduleViewProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight capitalize">
               {format.dateTime(new Date(schedule.year, schedule.month - 1), { month: 'long' })} {schedule.year}
             </h1>
             <div className="flex items-center gap-2 mt-1">

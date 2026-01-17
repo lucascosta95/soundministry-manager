@@ -250,7 +250,7 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight capitalize">
               {format.dateTime(new Date(schedule.year, schedule.month - 1), { month: 'long' })} {schedule.year}
             </h1>
             <div className="flex items-center gap-2 mt-1">
