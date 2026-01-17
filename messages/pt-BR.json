@@ -265,7 +265,13 @@
     "add": "Adicionar",
     "operatorAddedSuccess": "Operador adicionado com sucesso",
     "addOperatorError": "Falha ao adicionar operador",
-    "addOperatorErrorGeneric": "Erro ao adicionar operador"
+    "addOperatorErrorGeneric": "Erro ao adicionar operador",
+    "publicLink": "Link Público",
+    "copyPublicLink": "Copiar Link Público",
+    "publicLinkCopied": "Link Copiado!",
+    "publicLinkCopiedDesc": "Link público copiado para a área de transferência",
+    "viewPublicPage": "Visualizar Página Pública",
+    "availableAt": "Disponível em: "
   },
   "months": {
     "january": "Janeiro",

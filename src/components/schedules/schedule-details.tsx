@@ -3,7 +3,7 @@
 import {memo, useCallback, useState} from "react"
 import {useFormatter, useTranslations} from "next-intl"
 import {useRouter} from "next/navigation"
-import {ArrowLeft, Calendar, Check, Copy, Printer, Save, Trash2} from "lucide-react"
+import {ArrowLeft, Calendar, Check, Copy, Link as LinkIcon, Printer, Save, Trash2} from "lucide-react"
 import {AddOperatorDialog} from "@/components/schedules/add-operator-dialog"
 import {
   AlertDialog,
@@ -56,11 +56,12 @@ interface ScheduleDetailsProps {
   operators: { id: string; name: string }[]
 }
 
-const EventCard = memo(({ event, onRemoveAssignment, operators, onSuccess }: { 
+const EventCard = memo(({ event, onRemoveAssignment, operators, onSuccess, isPublished }: {
   event: ScheduleEvent
   onRemoveAssignment: (id: string) => void
   operators: { id: string; name: string }[]
   onSuccess: () => void
+  isPublished: boolean
 }) => {
   const format = useFormatter()
   const t = useTranslations("schedules")
@@ -81,12 +82,14 @@ const EventCard = memo(({ event, onRemoveAssignment, operators, onSuccess }: {
           </div>
           <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
             <Badge variant="outline">{event.name}</Badge>
-            <AddOperatorDialog 
-              eventId={event.id} 
-              onSuccess={onSuccess}
-              assignedOperatorIds={event.assignments.map(a => a.operator.id)}
-              operators={operators}
-            />
+            {!isPublished && (
+              <AddOperatorDialog 
+                eventId={event.id} 
+                onSuccess={onSuccess}
+                assignedOperatorIds={event.assignments.map(a => a.operator.id)}
+                operators={operators}
+              />
+            )}
           </div>
         </div>
       </CardHeader>
@@ -106,15 +109,17 @@ const EventCard = memo(({ event, onRemoveAssignment, operators, onSuccess }: {
                   {assignment.isManual && (
                     <Badge variant="secondary" className="text-[10px] h-5">{t("manual")}</Badge>
                   )}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 text-muted-foreground hover:text-destructive"
-                    onClick={() => onRemoveAssignment(assignment.id)}
-                    title={t("removeOperatorTooltip")}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
+                  {!isPublished && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 text-muted-foreground hover:text-destructive"
+                      onClick={() => onRemoveAssignment(assignment.id)}
+                      title={t("removeOperatorTooltip")}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}
@@ -140,6 +145,7 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
   const { toast } = useToast()
   const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [publicLinkCopied, setPublicLinkCopied] = useState(false)
 
   const refreshData = useCallback(() => {
     router.refresh()
@@ -171,6 +177,7 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
   }
 
   const handleCopyToClipboard = () => {
+    const link = `${window.location.origin}/public/schedules/${schedule.id}`
     const monthName = format.dateTime(new Date(schedule.year, schedule.month - 1), { month: 'long' })
     let text = `*${t("scheduleTitlePrefix")} ${monthName} ${schedule.year}*\n\n`
 
@@ -184,6 +191,8 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
       text += `👤 ${operatorsList || t("noOperatorsAssigned")}\n\n`
     })
 
+    text += `${t('availableAt')} ${link}`
+
     navigator.clipboard.writeText(text)
     setCopied(true)
     toast({
@@ -192,6 +201,18 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
     })
 
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleCopyPublicLink = () => {
+    const link = `${window.location.origin}/public/schedules/${schedule.id}`
+    navigator.clipboard.writeText(link)
+    setPublicLinkCopied(true)
+    toast({
+      title: t("publicLinkCopied"),
+      description: t("publicLinkCopiedDesc"),
+    })
+
+    setTimeout(() => setPublicLinkCopied(false), 2000)
   }
 
   const handleRemoveAssignment = async () => {
@@ -243,6 +264,10 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
           </div>
         </div>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            <Button variant="outline" onClick={handleCopyPublicLink} className="flex-1 sm:flex-none">
+                {publicLinkCopied ? <Check className="mr-2 h-4 w-4" /> : <LinkIcon className="mr-2 h-4 w-4" />}
+                {publicLinkCopied ? t("publicLinkCopied") : t("copyPublicLink")}
+            </Button>
             <Button variant="outline" onClick={handleCopyToClipboard} className="flex-1 sm:flex-none">
                 {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
                 {copied ? t("copied") : t("copy")}
@@ -276,9 +301,10 @@ export function ScheduleDetails({ schedule, operators }: ScheduleDetailsProps) {
           <EventCard 
             key={event.id} 
             event={event} 
-            onRemoveAssignment={setAssignmentToDelete}
-            operators={operators}
+            onRemoveAssignment={setAssignmentToDelete} 
+            operators={operators} 
             onSuccess={refreshData}
+            isPublished={schedule.status === "PUBLISHED"}
           />
         ))}
       </div>

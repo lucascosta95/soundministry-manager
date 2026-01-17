@@ -263,7 +263,13 @@
     "add": "Add",
     "operatorAddedSuccess": "Operator added successfully",
     "addOperatorError": "Failed to add operator",
-    "addOperatorErrorGeneric": "Error adding operator"
+    "addOperatorErrorGeneric": "Error adding operator",
+    "publicLink": "Public Link",
+    "copyPublicLink": "Copy Public Link",
+    "publicLinkCopied": "Link Copied!",
+    "publicLinkCopiedDesc": "Public link copied to clipboard",
+    "viewPublicPage": "View Public Page",
+    "availableAt": "Available at: "
   },
   "months": {
     "january": "January",
