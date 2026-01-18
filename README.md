@@ -50,6 +50,8 @@ Crie um arquivo `.env` na raiz do projeto:
 ```env
 DATABASE_URL="postgresql://user:pass@host:5432/db"
 SESSION_SECRET="sua-chave-secreta-com-minimo-32-caracteres"
+NEXT_PUBLIC_DEFAULT_LOCALE="pt-BR"
+DEFAULT_USER_PASSWORD="SoundMinistry"
 ```
 
 ### 3. Banco de Dados
