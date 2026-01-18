@@ -22,11 +22,12 @@ export default async function UsersPage() {
     orderBy: { name: "asc" },
   })
 
-  // Serialize dates
   const users = usersData.map(u => ({
       ...u,
       createdAt: u.createdAt.toISOString()
   }))
 
-  return <UsersClientPage users={users} isAdmin={currentUser.role === "ADMIN"} />
+  const defaultPassword = process.env.DEFAULT_USER_PASSWORD || "SoundMinistry@2026"
+
+  return <UsersClientPage users={users} defaultPassword={defaultPassword} />
 }

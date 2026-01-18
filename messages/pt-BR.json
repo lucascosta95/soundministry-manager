@@ -182,12 +182,12 @@
     "deleteError": "Erro ao excluir usuário",
     "resetPassword": "Resetar Senha",
     "resetPasswordConfirm": "Tem certeza que deseja resetar a senha deste usuário?",
-    "resetPasswordDescription": "A senha será alterada para: SoundMinistry@2024",
+    "resetPasswordDescription": "A senha será alterada para: {password}",
     "resetPasswordSuccess": "Senha resetada com sucesso!",
     "resetPasswordError": "Erro ao resetar senha",
     "emailExists": "E-mail já está em uso",
     "passwordOptional": "Deixe em branco para usar a senha padrão",
-    "defaultPassword": "Senha padrão: SoundMinistry@2024"
+    "defaultPassword": "Senha padrão: {password}"
   },
   "serviceDays": {
     "title": "Dias de Culto",

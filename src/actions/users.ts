@@ -37,6 +37,8 @@ export type UserState = {
     validationErrors?: Record<string, string[] | undefined>
 }
 
+const DEFAULT_PASSWORD = process.env.DEFAULT_USER_PASSWORD || "SoundMinistry@2026"
+
 export async function createUser(prevState: UserState, formData: FormData): Promise<UserState> {
     try {
         await checkAuth(true)
@@ -65,7 +67,7 @@ export async function createUser(prevState: UserState, formData: FormData): Prom
             return { success: false, error: "Email already in use" }
         }
 
-        const hashedPassword = await bcrypt.hash(password || "sound123", 10)
+        const hashedPassword = await bcrypt.hash(password || DEFAULT_PASSWORD, 10)
 
         await prisma.user.create({
             data: {
@@ -148,7 +150,7 @@ export async function deleteUser(id: string): Promise<{ success: boolean; error?
 export async function resetPassword(id: string): Promise<{ success: boolean; error?: string }> {
     try {
         await checkAuth(true)
-        const hashedPassword = await bcrypt.hash("sound123", 10)
+        const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, 10)
         
         await prisma.user.update({
             where: { id },

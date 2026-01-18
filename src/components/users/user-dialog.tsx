@@ -23,9 +23,10 @@ interface UserDialogProps {
   onOpenChange: (open: boolean) => void
   onSuccess: () => void
   user?: User
+  defaultPassword: string
 }
 
-export function UserDialog({ open, onOpenChange, onSuccess, user }: UserDialogProps) {
+export function UserDialog({ open, onOpenChange, onSuccess, user, defaultPassword }: UserDialogProps) {
   const t = useTranslations("users")
   const tc = useTranslations("common")
   const [loading, setLoading] = useState(false)
@@ -129,7 +130,7 @@ export function UserDialog({ open, onOpenChange, onSuccess, user }: UserDialogPr
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder={t("passwordOptional")}
                 />
-                <p className="text-xs text-muted-foreground">{t("defaultPassword")}</p>
+                <p className="text-xs text-muted-foreground">{t("defaultPassword", { password: defaultPassword })}</p>
               </div>
             )}
           </div>

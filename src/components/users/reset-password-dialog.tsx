@@ -20,9 +20,10 @@ interface ResetPasswordDialogProps {
   onOpenChange: (open: boolean) => void
   onSuccess: () => void
   userId: string
+  defaultPassword: string
 }
 
-export function ResetPasswordDialog({ open, onOpenChange, onSuccess, userId }: ResetPasswordDialogProps) {
+export function ResetPasswordDialog({ open, onOpenChange, onSuccess, userId, defaultPassword }: ResetPasswordDialogProps) {
   const t = useTranslations("users")
   const tc = useTranslations("common")
   const [loading, setLoading] = useState(false)
@@ -53,7 +54,7 @@ export function ResetPasswordDialog({ open, onOpenChange, onSuccess, userId }: R
           <AlertDialogDescription>
             {t("resetPasswordConfirm")}
             <br />
-            {t("resetPasswordDescription")}
+            {t("resetPasswordDescription", { password: defaultPassword })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

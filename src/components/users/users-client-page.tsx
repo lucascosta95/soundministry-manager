@@ -24,10 +24,10 @@ interface User {
 
 interface UsersClientPageProps {
     users: User[]
-    isAdmin: boolean
+    defaultPassword: string
 }
 
-export default function UsersClientPage({ users, isAdmin }: UsersClientPageProps) {
+export default function UsersClientPage({ users, defaultPassword }: UsersClientPageProps) {
   const t = useTranslations("users")
   const tc = useTranslations("common")
   const { toast } = useToast()
@@ -145,6 +145,7 @@ export default function UsersClientPage({ users, isAdmin }: UsersClientPageProps
         onOpenChange={setDialogOpen}
         onSuccess={() => handleSuccess(selectedUser ? t("updateSuccess") : t("createSuccess"))}
         user={selectedUser}
+        defaultPassword={defaultPassword}
       />
 
       {selectedUser && (
@@ -161,6 +162,7 @@ export default function UsersClientPage({ users, isAdmin }: UsersClientPageProps
             onOpenChange={setResetPasswordDialogOpen}
             onSuccess={() => handleSuccess(t("resetPasswordSuccess"))}
             userId={selectedUser.id}
+            defaultPassword={defaultPassword}
           />
         </>
       )}

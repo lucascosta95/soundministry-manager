@@ -180,12 +180,12 @@
     "deleteError": "Error deleting user",
     "resetPassword": "Reset Password",
     "resetPasswordConfirm": "Are you sure you want to reset this user's password?",
-    "resetPasswordDescription": "Password will be changed to: SoundMinistry@2024",
+    "resetPasswordDescription": "Password will be changed to: {password}",
     "resetPasswordSuccess": "Password reset successfully!",
     "resetPasswordError": "Error resetting password",
     "emailExists": "Email is already in use",
     "passwordOptional": "Leave blank to use default password",
-    "defaultPassword": "Default password: SoundMinistry@2024"
+    "defaultPassword": "Default password: {password}"
   },
   "serviceDays": {
     "title": "Service Days",
