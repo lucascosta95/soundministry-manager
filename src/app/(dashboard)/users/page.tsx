@@ -15,7 +15,7 @@ export default async function UsersPage() {
   const currentUser = await prisma.user.findUnique({ where: { id: session.userId } })
   
   if (currentUser?.role !== "ADMIN") {
-      redirect("/") // Or a 403 page
+      redirect("/")
   }
 
   const usersData = await prisma.user.findMany({

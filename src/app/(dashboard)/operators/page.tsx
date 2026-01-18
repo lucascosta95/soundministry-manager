@@ -11,10 +11,9 @@ export default async function OperatorsPage() {
     }),
   ])
 
-  // Serialize dates to pass to client component
   const operators = operatorsData.map((op) => ({
     ...op,
-    birthday: op.birthday.toISOString(), // Convert Date to ISO string
+    birthday: op.birthday.toISOString(),
   }))
 
   return (

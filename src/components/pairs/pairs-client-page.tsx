@@ -20,7 +20,7 @@ type PreferredPair = {
     id: string
     name: string
   }
-  createdAt: Date // Changed to Date since it's coming from Prisma directly
+  createdAt: Date
 }
 
 type SoundOperator = {

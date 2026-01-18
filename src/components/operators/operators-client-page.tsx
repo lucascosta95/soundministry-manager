@@ -63,7 +63,7 @@ export default function OperatorsClientPage({ operators, serviceDays }: Operator
         t("thursday"),
         t("friday"),
         t("saturday"),
-        t("monday"), // Fallback/Loop prevention if needed
+        t("monday"),
       ]
       return days[serviceDay.weekDay] || serviceDay.name
     }

@@ -42,12 +42,8 @@ export async function createAssignment(eventId: string, operatorId: string): Pro
             }
         })
 
-        revalidatePath(`/schedules`) // Invalidate all schedules to be safe or specific schedule if we had ID
-        // Since we don't have schedule ID easily here, and revalidatePath works on path, invalidating /schedules/[id] would require finding schedule ID.
-        // But since the page uses dynamic ID, we can't easily revalidate specific one without query.
-        // However, usually revalidatePath updates the current page if called from it.
+        revalidatePath(`/schedules`)
         
-        // Let's find the schedule ID to be precise
         const event = await prisma.scheduleEvent.findUnique({
             where: { id: eventId },
             select: { scheduleId: true }
